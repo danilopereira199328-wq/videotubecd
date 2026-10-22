@@ -1,4 +1,3 @@
-```dockerfile
 FROM node:18-alpine
 
 # Instalar FFmpeg
@@ -11,15 +10,8 @@ RUN npm install
 
 COPY . .
 
-# O Render atribui a porta dinamicamente
 ENV PORT=10000
 EXPOSE 10000
 
-CMD ["node", "server.cjs"]
-```
-
-#### 2. Confirmar no `server.cjs`
-Certifique-se de que no início do seu `server.cjs` a porta está definida para ler `process.env.PORT`:
-
-```javascript
-const PORT = process.env.PORT || 5000;
+# Caminho exato da pasta do servidor backend
+CMD ["node", "src/components/backend/server.cjs"]
