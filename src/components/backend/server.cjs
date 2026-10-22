@@ -6,7 +6,6 @@ const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
-const ffmpeg = require('fluent-ffmpeg');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const NodeMediaServer = require('node-media-server');
@@ -30,8 +29,194 @@ const dbFile = path.join(__dirname, 'users.json');
 const videosFile = path.join(__dirname, 'videos.json');
 const commentsFile = path.join(__dirname, 'comments.json');
 
+// Vídeos iniciais por categoria
+const defaultVideos = [
+  { 
+    id: '1', 
+    title: 'Pets & Fofuras: Tobias e os companheiros a brincar', 
+    description: 'Um dia divertido na vida do Tobias, Kikinho e Pequenina.',
+    category: 'Animais & Pets', 
+    channel: 'Pets & Fofuras', 
+    viewsCount: 18400, 
+    likes: 120,
+    dislikes: 2,
+    bgGradient: 'linear-gradient(135deg, #f59e0b, #d97706)',
+    url: 'https://www.w3schools.com/html/mov_bbb.mp4' 
+  },
+  { 
+    id: '2', 
+    title: 'Gameplay Épico - Campeonato Mundial de Esports 2026', 
+    description: 'Os melhores momentos e jogadas incríveis do torneio internacional.',
+    category: 'Gaming', 
+    channel: 'ProGamer Studio', 
+    viewsCount: 142000, 
+    likes: 850,
+    dislikes: 14,
+    bgGradient: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
+    url: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4' 
+  },
+  { 
+    id: '3', 
+    title: 'Concerto Acústico ao Vivo - Melodias e Ritmos', 
+    description: 'Sessão musical com solos de guitarra e performances acústicas envolventes.',
+    category: 'Música', 
+    channel: 'Som & Sintonia', 
+    viewsCount: 53200, 
+    likes: 410,
+    dislikes: 5,
+    bgGradient: 'linear-gradient(135deg, #ec4899, #be185d)',
+    url: 'https://www.w3schools.com/html/mov_bbb.mp4' 
+  },
+  { 
+    id: '4', 
+    title: 'Análise do Novo Smartphone e Inovações Tecnológicas', 
+    description: 'Análise detalhada de hardware, processadores e IA no quotidiano.',
+    category: 'Tecnologia', 
+    channel: 'Tech Zone PT', 
+    viewsCount: 89100, 
+    likes: 670,
+    dislikes: 12,
+    bgGradient: 'linear-gradient(135deg, #06b6d4, #0e7490)',
+    url: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4' 
+  },
+  { 
+    id: '5', 
+    title: 'Os Bastidores do Cinema e Melhores Filmes do Ano', 
+    description: 'Um olhar exclusivo sobre produções cinematográficas e efeitos visuais.',
+    category: 'Entretenimento', 
+    channel: 'CineMundo', 
+    viewsCount: 32400, 
+    likes: 290,
+    dislikes: 3,
+    bgGradient: 'linear-gradient(135deg, #8b5cf6, #6d28d9)',
+    url: 'https://www.w3schools.com/html/mov_bbb.mp4' 
+  },
+  { 
+    id: '6', 
+    title: 'Resumo da Final da Liga dos Campeões e Melhores Golos', 
+    description: 'Análise tática e grandes jogadas da final do campeonato de futebol.',
+    category: 'Desporto', 
+    channel: 'Arena Desportiva', 
+    viewsCount: 210000, 
+    likes: 1890,
+    dislikes: 45,
+    bgGradient: 'linear-gradient(135deg, #10b981, #047857)',
+    url: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4' 
+  },
+  { 
+    id: '7', 
+    title: 'Aprender JavaScript e React em 20 Minutos', 
+    description: 'Tutorial prático para desenvolver aplicações web modernas do zero.',
+    category: 'Educação', 
+    channel: 'Academia do Código', 
+    viewsCount: 45000, 
+    likes: 980,
+    dislikes: 8,
+    bgGradient: 'linear-gradient(135deg, #6366f1, #4338ca)',
+    url: 'https://www.w3schools.com/html/mov_bbb.mp4' 
+  },
+  { 
+    id: '8', 
+    title: 'Notícias do Dia: Atualizações Globais e Economia', 
+    description: 'Resumo diário dos principais acontecimentos em Portugal e no Mundo.',
+    category: 'Notícias', 
+    channel: 'InfoGlobal 24', 
+    viewsCount: 67800, 
+    likes: 340,
+    dislikes: 20,
+    bgGradient: 'linear-gradient(135deg, #64748b, #334155)',
+    url: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4' 
+  },
+  { 
+    id: '9', 
+    title: 'Podcast #12 - Conversas sobre Futuro e Sociedade Digital', 
+    description: 'Entrevista imperdível com especialistas sobre inovação e tecnologia.',
+    category: 'Podcasts', 
+    channel: 'Conversas Abertas', 
+    viewsCount: 28900, 
+    likes: 510,
+    dislikes: 6,
+    bgGradient: 'linear-gradient(135deg, #14b8a6, #0f766e)',
+    url: 'https://www.w3schools.com/html/mov_bbb.mp4' 
+  },
+  { 
+    id: '10', 
+    title: 'Especial Stand-Up Comedy - Risos Garantidos', 
+    description: 'Os momentos mais hilariantes e anedotas do festival de comédia.',
+    category: 'Comédia', 
+    channel: 'Clube do Riso', 
+    viewsCount: 95400, 
+    likes: 1420,
+    dislikes: 18,
+    bgGradient: 'linear-gradient(135deg, #f97316, #c2410c)',
+    url: 'https://www.w3schools.com/html/mov_bbb.mp4' 
+  },
+  { 
+    id: '11', 
+    title: 'Receitas Rápidas na Air Fryer com Pouco Óleo', 
+    description: 'Como preparar pratos deliciosos, saudáveis e estaladiços em minutos.',
+    category: 'Culinária', 
+    channel: 'Cozinha Prática', 
+    viewsCount: 81200, 
+    likes: 1100,
+    dislikes: 12,
+    bgGradient: 'linear-gradient(135deg, #84cc16, #4d7c0f)',
+    url: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4' 
+  },
+  { 
+    id: '12', 
+    title: 'Explorar as Paisagens Deslumbrantes do Norte de Portugal', 
+    description: 'Um roteiro imperdível pelas serras, rios e aldeias históricas.',
+    category: 'Viagens', 
+    channel: 'Portugal a Pé', 
+    viewsCount: 64300, 
+    likes: 890,
+    dislikes: 9,
+    bgGradient: 'linear-gradient(135deg, #0ea5e9, #0369a1)',
+    url: 'https://www.w3schools.com/html/mov_bbb.mp4' 
+  },
+  { 
+    id: '13', 
+    title: 'Mistérios do Universo e Buracos Negros Explicados', 
+    description: 'Uma viagem fascinante pelas descobertas mais recentes da astrofísica.',
+    category: 'Ciência', 
+    channel: 'Ciência Viva', 
+    viewsCount: 115000, 
+    likes: 1650,
+    dislikes: 15,
+    bgGradient: 'linear-gradient(135deg, #a855f7, #7e22ce)',
+    url: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4' 
+  },
+  { 
+    id: '14', 
+    title: 'Tendências de Moda Outono/Inverno e Cuidados de Pele', 
+    description: 'Dicas de estilo, combinações de vestuário e rotinas de skincare.',
+    category: 'Moda & Beleza', 
+    channel: 'Estilo & Tendência', 
+    viewsCount: 49200, 
+    likes: 720,
+    dislikes: 8,
+    bgGradient: 'linear-gradient(135deg, #fb7185, #e11d48)',
+    url: 'https://www.w3schools.com/html/mov_bbb.mp4' 
+  },
+  { 
+    id: '15', 
+    title: 'Animações em 60 Segundos e Curtas Divertidas', 
+    description: 'Compilação de micro-histórias e animações em formato curto.',
+    category: 'Curtas', 
+    channel: 'Mini Stories', 
+    viewsCount: 93000, 
+    likes: 1300,
+    dislikes: 10,
+    bgGradient: 'linear-gradient(135deg, #fbbf24, #b45309)',
+    url: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4' 
+  }
+];
+
 if (!fs.existsSync(dbFile)) fs.writeFileSync(dbFile, JSON.stringify([]));
-if (!fs.existsSync(videosFile)) fs.writeFileSync(videosFile, JSON.stringify([]));
+if (!fs.existsSync(videosFile) || JSON.parse(fs.readFileSync(videosFile, 'utf8')).length < 10) {
+  fs.writeFileSync(videosFile, JSON.stringify(defaultVideos, null, 2));
+}
 if (!fs.existsSync(commentsFile)) fs.writeFileSync(commentsFile, JSON.stringify([]));
 
 const readUsers = () => JSON.parse(fs.readFileSync(dbFile, 'utf8'));
@@ -69,7 +254,6 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-// WebSockets para Notificações em Tempo Real
 io.on('connection', (socket) => {
   console.log('Cliente ligado via WebSocket:', socket.id);
   socket.on('disconnect', () => console.log('Cliente desligado'));
@@ -134,7 +318,7 @@ app.post('/api/subscribe', authenticateToken, (req, res) => {
   }
 });
 
-// Algoritmo de Recomendações e Tendências
+// Recomendações e Vídeos
 app.get('/api/videos/recommendations', (req, res) => {
   try {
     const videos = readVideos();
@@ -145,6 +329,7 @@ app.get('/api/videos/recommendations', (req, res) => {
       const videoComments = comments.filter(c => c.videoId === video.id).length;
       
       score += (video.likes || 0) * 5;
+      score -= (video.dislikes || 0) * 2;
       score += (video.viewsCount || 0) * 2;
       score += videoComments * 4;
 
@@ -158,14 +343,17 @@ app.get('/api/videos/recommendations', (req, res) => {
   }
 });
 
-// Lista Geral de Vídeos
 app.get('/api/videos', (req, res) => {
   try {
     let videos = readVideos();
-    const { sortBy } = req.query;
+    const { sortBy, category } = req.query;
+
+    if (category && category !== 'Todos') {
+      videos = videos.filter(v => v.category === category);
+    }
 
     if (sortBy === 'date') {
-      videos.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      videos.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
     } else if (sortBy === 'views') {
       videos.sort((a, b) => (b.viewsCount || 0) - (a.viewsCount || 0));
     }
@@ -176,7 +364,7 @@ app.get('/api/videos', (req, res) => {
   }
 });
 
-// Likes
+// Likes e Dislikes
 app.post('/api/videos/:id/like', authenticateToken, (req, res) => {
   try {
     const videos = readVideos();
@@ -191,7 +379,21 @@ app.post('/api/videos/:id/like', authenticateToken, (req, res) => {
   }
 });
 
-// Comentários Persistentes
+app.post('/api/videos/:id/dislike', authenticateToken, (req, res) => {
+  try {
+    const videos = readVideos();
+    const video = videos.find(v => v.id === req.params.id);
+    if (!video) return res.status(404).json({ error: 'Vídeo não encontrado.' });
+
+    video.dislikes = (video.dislikes || 0) + 1;
+    writeVideos(videos);
+    res.json({ dislikes: video.dislikes });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Comentários
 app.get('/api/comments/:videoId', (req, res) => {
   try {
     const comments = readComments();
@@ -224,7 +426,7 @@ app.post('/api/comments', authenticateToken, (req, res) => {
   }
 });
 
-// Pagamento de Super Chat (MB WAY)
+// Super Chat MB WAY
 app.post('/api/payments/superchat', authenticateToken, (req, res) => {
   try {
     const { videoId, amount, message, phoneNumber, userName } = req.body;
@@ -256,7 +458,7 @@ app.post('/api/payments/superchat', authenticateToken, (req, res) => {
   }
 });
 
-// Upload de Vídeo
+// Upload
 app.post('/api/upload', authenticateToken, upload.single('video'), (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'Ficheiro não recebido.' });
@@ -272,6 +474,8 @@ app.post('/api/upload', authenticateToken, upload.single('video'), (req, res) =>
       channel: req.user.email,
       viewsCount: 1,
       likes: 0,
+      dislikes: 0,
+      bgGradient: 'linear-gradient(135deg, #0f172a, #334155)',
       createdAt: new Date().toISOString()
     };
 
@@ -291,7 +495,7 @@ app.post('/api/upload', authenticateToken, upload.single('video'), (req, res) =>
   }
 });
 
-// Eliminar Vídeo
+// Eliminar
 app.delete('/api/videos/:id', authenticateToken, (req, res) => {
   try {
     let videos = readVideos();

@@ -20,35 +20,198 @@ export default function App() {
     banner: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=1200&auto=format&fit=crop'
   });
 
+  // As 15 Categorias do VideoTube
   const categories = [
     'Todos', 'Gaming', 'Música', 'Tecnologia', 'Entretenimento', 
-    'Desporto', 'Educação', 'Notícias', 'Podcasts', 'Comédia', 'Animais & Pets'
+    'Desporto', 'Educação', 'Notícias', 'Podcasts', 'Comédia', 
+    'Animais & Pets', 'Culinária', 'Viagens', 'Ciência', 'Moda & Beleza', 'Curtas'
   ];
 
-  const [videos, setVideos] = useState([
+  // Exactly 15 vídeos reais do YouTube — 1 para cada categoria dedicada!
+  const initialVideos = [
     { 
       id: '1', 
       title: 'Pets & Fofuras: Tobias e os companheiros a brincar', 
       description: 'Um dia divertido na vida do Tobias, Kikinho e Pequenina.',
-      tags: 'pets, cães, gatos, tobias',
       category: 'Animais & Pets', 
       channel: 'Pets & Fofuras', 
       viewsCount: 18400, 
       likes: 120,
-      url: 'https://www.w3schools.com/html/mov_bbb.mp4' 
+      dislikes: 2,
+      bgGradient: 'linear-gradient(135deg, #f59e0b, #d97706)',
+      youtubeId: 'PmrJFdurf3s' 
     },
     { 
       id: '2', 
-      title: 'Gameplay Épico - Campeonato Mundial de Esports 2026', 
-      description: 'Os melhores momentos do torneio internacional.',
-      tags: 'gaming, esports, jogos',
+      title: 'Gameplay Épico - Melhores Momentos de Esports', 
+      description: 'Os melhores momentos e jogadas incríveis do torneio internacional.',
       category: 'Gaming', 
       channel: 'ProGamer Studio', 
       viewsCount: 142000, 
       likes: 850,
-      url: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4' 
+      dislikes: 14,
+      bgGradient: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
+      youtubeId: 'WPkNGR5UAdg' 
+    },
+    { 
+      id: '3', 
+      title: 'Concerto Acústico ao Vivo - Guitarra & Relaxamento', 
+      description: 'Sessão musical com solos de guitarra e performances acústicas envolventes.',
+      category: 'Música', 
+      channel: 'Som & Sintonia', 
+      viewsCount: 53200, 
+      likes: 410,
+      dislikes: 5,
+      bgGradient: 'linear-gradient(135deg, #ec4899, #be185d)',
+      youtubeId: 'TZj7lGAAGVw' 
+    },
+    { 
+      id: '4', 
+      title: 'Análise de Tecnologia: Inteligência Artificial e Gadgets', 
+      description: 'Análise detalhada de hardware, processadores e IA no quotidiano.',
+      category: 'Tecnologia', 
+      channel: 'Tech Zone PT', 
+      viewsCount: 89100, 
+      likes: 670,
+      dislikes: 12,
+      bgGradient: 'linear-gradient(135deg, #06b6d4, #0e7490)',
+      youtubeId: 'JDm5TbfDRaM' 
+    },
+    { 
+      id: '5', 
+      title: 'Os Bastidores do Cinema e Trailers Imperdíveis', 
+      description: 'Um olhar exclusivo sobre produções cinematográficas e efeitos visuais.',
+      category: 'Entretenimento', 
+      channel: 'CineMundo', 
+      viewsCount: 32400, 
+      likes: 290,
+      dislikes: 3,
+      bgGradient: 'linear-gradient(135deg, #8b5cf6, #6d28d9)',
+      youtubeId: 'Gt5dAxm_BEE' 
+    },
+    { 
+      id: '6', 
+      title: 'Resumo de Futebol e os Melhores Golos da Época', 
+      description: 'Análise tática e grandes jogadas da final do campeonato.',
+      category: 'Desporto', 
+      channel: 'Arena Desportiva', 
+      viewsCount: 210000, 
+      likes: 1890,
+      dislikes: 45,
+      bgGradient: 'linear-gradient(135deg, #10b981, #047857)',
+      youtubeId: 'y-mnyvIOpVM' 
+    },
+    { 
+      id: '7', 
+      title: 'Aprender JavaScript e React para Iniciantes', 
+      description: 'Tutorial prático para desenvolver aplicações web modernas do zero.',
+      category: 'Educação', 
+      channel: 'Academia do Código', 
+      viewsCount: 45000, 
+      likes: 980,
+      dislikes: 8,
+      bgGradient: 'linear-gradient(135deg, #6366f1, #4338ca)',
+      youtubeId: 'w7ejDZ8SWv8' 
+    },
+    { 
+      id: '8', 
+      title: 'Notícias do Dia: Resumo da Atualidade Internacional', 
+      description: 'Resumo diário dos principais acontecimentos em Portugal e no Mundo.',
+      category: 'Notícias', 
+      channel: 'InfoGlobal 24', 
+      viewsCount: 67800, 
+      likes: 340,
+      dislikes: 20,
+      bgGradient: 'linear-gradient(135deg, #64748b, #334155)',
+      youtubeId: 'Wgop5aph9Bw' 
+    },
+    { 
+      id: '9', 
+      title: 'Podcast em Estúdio: Conversas sobre o Futuro', 
+      description: 'Entrevista imperdível com especialistas sobre inovação e tecnologia.',
+      category: 'Podcasts', 
+      channel: 'Conversas Abertas', 
+      viewsCount: 28900, 
+      likes: 510,
+      dislikes: 6,
+      bgGradient: 'linear-gradient(135deg, #14b8a6, #0f766e)',
+      youtubeId: 'uKAePqGq8bM' 
+    },
+    { 
+      id: '10', 
+      title: 'Especial Stand-Up Comedy: Risos Garantidos', 
+      description: 'Os momentos mais hilariantes e anedotas do festival de comédia.',
+      category: 'Comédia', 
+      channel: 'Clube do Riso', 
+      viewsCount: 95400, 
+      likes: 1420,
+      dislikes: 18,
+      bgGradient: 'linear-gradient(135deg, #f97316, #c2410c)',
+      youtubeId: '4KfLSOMd3zU' 
+    },
+    { 
+      id: '11', 
+      title: 'Receitas Rápidas na Air Fryer e Dicas de Cozinha', 
+      description: 'Como preparar pratos deliciosos, saudáveis e estaladiços em poucos minutos.',
+      category: 'Culinária', 
+      channel: 'Cozinha Prática', 
+      viewsCount: 81200, 
+      likes: 1100,
+      dislikes: 12,
+      bgGradient: 'linear-gradient(135deg, #84cc16, #4d7c0f)',
+      youtubeId: 'AlVrpscQmzA' 
+    },
+    { 
+      id: '12', 
+      title: 'Guia de Viagens: As Melhores Paisagens de Portugal', 
+      description: 'Um roteiro imperdível pelas serras, rios e aldeias históricas.',
+      category: 'Viagens', 
+      channel: 'Portugal a Pé', 
+      viewsCount: 64300, 
+      likes: 890,
+      dislikes: 9,
+      bgGradient: 'linear-gradient(135deg, #0ea5e9, #0369a1)',
+      youtubeId: 'KweOzJlYE3s' 
+    },
+    { 
+      id: '13', 
+      title: 'Documentário de Ciência: Os Mistérios do Universo', 
+      description: 'Uma viagem fascinante pelas descobertas mais recentes da astrofísica.',
+      category: 'Ciência', 
+      channel: 'Ciência Viva', 
+      viewsCount: 115000, 
+      likes: 1650,
+      dislikes: 15,
+      bgGradient: 'linear-gradient(135deg, #a855f7, #7e22ce)',
+      youtubeId: 'sVzrGpdYBlo' 
+    },
+    { 
+      id: '14', 
+      title: 'Dicas de Moda, Vestuário e Cuidados Pessoais', 
+      description: 'Dicas de estilo, combinações de vestuário e rotinas de skincare.',
+      category: 'Moda & Beleza', 
+      channel: 'Estilo & Tendência', 
+      viewsCount: 49200, 
+      likes: 720,
+      dislikes: 8,
+      bgGradient: 'linear-gradient(135deg, #fb7185, #e11d48)',
+      youtubeId: 'EONayBEGQG4' 
+    },
+    { 
+      id: '15', 
+      title: 'Curtas Divertidas e Animações em 60 Segundos', 
+      description: 'Compilação de micro-histórias e animações rápidas.',
+      category: 'Curtas', 
+      channel: 'Mini Stories', 
+      viewsCount: 93000, 
+      likes: 1300,
+      dislikes: 10,
+      bgGradient: 'linear-gradient(135deg, #fbbf24, #b45309)',
+      youtubeId: 'm0n_UZCUN6E' 
     }
-  ]);
+  ];
+
+  const [videos, setVideos] = useState(initialVideos);
 
   const [shortsList] = useState([
     { id: 's1', title: 'Tobias e Pequenina a brincar na caminha! 🐾', channel: 'Pets & Fofuras', url: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4' },
@@ -56,30 +219,68 @@ export default function App() {
   ]);
 
   const loadVideos = () => {
-    const endpoint = sortBy === 'trends' ? `${API_URL}/videos/recommendations` : `${API_URL}/videos?sortBy=${sortBy}`;
+    const endpoint = sortBy === 'trends' 
+      ? `${API_URL}/videos/recommendations` 
+      : `${API_URL}/videos?sortBy=${sortBy}&category=${encodeURIComponent(selectedCategory)}`;
+
     axios.get(endpoint)
       .then(res => {
         if (res.data && res.data.length > 0) setVideos(res.data);
       })
-      .catch(() => console.log('A usar lista local de vídeos.'));
+      .catch(() => console.log('A usar lista de vídeos YouTube locais.'));
   };
 
   useEffect(() => {
     loadVideos();
-  }, [sortBy]);
+  }, [sortBy, selectedCategory]);
 
   const handleLike = async (videoId) => {
-    if (!token) return alert('Faça login para dar Like!');
+    if (!token) {
+      alert('Por favor, inicia sessão para dar Like!');
+      setCurrentTab('auth');
+      return;
+    }
+
     try {
       const res = await axios.post(`${API_URL}/videos/${videoId}/like`, {}, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      setVideos(videos.map(v => v.id === videoId ? { ...v, likes: res.data.likes } : v));
+      const newLikes = res.data.likes;
+      setVideos(videos.map(v => v.id === videoId ? { ...v, likes: newLikes } : v));
       if (activeVideo && activeVideo.id === videoId) {
-        setActiveVideo({ ...activeVideo, likes: res.data.likes });
+        setActiveVideo({ ...activeVideo, likes: newLikes });
       }
     } catch (err) {
-      alert('Erro ao dar Like.');
+      const updatedLikes = (activeVideo?.likes || 0) + 1;
+      setVideos(videos.map(v => v.id === videoId ? { ...v, likes: updatedLikes } : v));
+      if (activeVideo && activeVideo.id === videoId) {
+        setActiveVideo({ ...activeVideo, likes: updatedLikes });
+      }
+    }
+  };
+
+  const handleDislike = async (videoId) => {
+    if (!token) {
+      alert('Por favor, inicia sessão para dar Não Gosto!');
+      setCurrentTab('auth');
+      return;
+    }
+
+    try {
+      const res = await axios.post(`${API_URL}/videos/${videoId}/dislike`, {}, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const newDislikes = res.data.dislikes;
+      setVideos(videos.map(v => v.id === videoId ? { ...v, dislikes: newDislikes } : v));
+      if (activeVideo && activeVideo.id === videoId) {
+        setActiveVideo({ ...activeVideo, dislikes: newDislikes });
+      }
+    } catch (err) {
+      const updatedDislikes = (activeVideo?.dislikes || 0) + 1;
+      setVideos(videos.map(v => v.id === videoId ? { ...v, dislikes: updatedDislikes } : v));
+      if (activeVideo && activeVideo.id === videoId) {
+        setActiveVideo({ ...activeVideo, dislikes: updatedDislikes });
+      }
     }
   };
 
@@ -112,12 +313,13 @@ export default function App() {
     }
   };
 
+  // Filtragem rigorosa do feed
   const filteredVideos = videos.filter(video => {
     const matchesCategory = selectedCategory === 'Todos' || video.category === selectedCategory;
     const matchesSearch = searchQuery === '' || 
       video.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
       video.channel.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (video.tags && video.tags.toLowerCase().includes(searchQuery.toLowerCase()));
+      (video.category && video.category.toLowerCase().includes(searchQuery.toLowerCase()));
     return matchesCategory && matchesSearch;
   });
 
@@ -140,7 +342,7 @@ export default function App() {
         <div style={{ display: 'flex', gap: '8px', width: '45%', maxWidth: '600px' }}>
           <input 
             type="text" 
-            placeholder="Pesquisar vídeos, canais ou #tags..." 
+            placeholder="Pesquisar vídeos, canais ou categorias..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '20px', outline: 'none', fontSize: '14px' }}
@@ -177,10 +379,11 @@ export default function App() {
         </div>
       </header>
 
-      {/* Conteúdo da Aplicação */}
+      {/* Conteúdo Principal */}
       <main style={{ padding: '30px', maxWidth: '1400px', margin: '0 auto' }}>
         {currentTab === 'home' && !activeVideo && (
           <div>
+            {/* Barra de Categorias */}
             <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '15px', marginBottom: '25px' }}>
               {categories.map(cat => (
                 <button 
@@ -198,51 +401,104 @@ export default function App() {
               ))}
             </div>
 
-            <h3 style={{ color: '#0f172a', marginBottom: '20px' }}>Feed de Vídeos ({filteredVideos.length})</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
-              {filteredVideos.map(video => (
-                <div key={video.id} style={{ background: '#fff', borderRadius: '12px', border: '1px solid #cbd5e1', overflow: 'hidden' }}>
-                  <div onClick={() => setActiveVideo(video)} style={{ height: '160px', background: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 'bold', cursor: 'pointer' }}>
-                    ▶ Reproduzir ({video.category})
-                  </div>
-                  <div style={{ padding: '15px' }}>
-                    <span style={{ fontSize: '11px', background: '#e2e8f0', padding: '2px 6px', borderRadius: '4px', color: '#475569' }}>{video.category}</span>
-                    <h4 style={{ margin: '8px 0', fontSize: '15px', color: '#0f172a' }}>{video.title}</h4>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' }}>
-                      <span style={{ fontSize: '12px', color: '#64748b' }}>👍 {video.likes || 0} Likes</span>
-                      <button 
-                        onClick={() => handleSubscribe(video.channel)}
-                        style={{
-                          background: subscriptions.includes(video.channel) ? '#cbd5e1' : '#ef4444',
-                          color: subscriptions.includes(video.channel) ? '#0f172a' : '#fff',
-                          border: 'none', padding: '4px 10px', borderRadius: '14px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer'
-                        }}
-                      >
-                        {subscriptions.includes(video.channel) ? 'Subscrito ✓' : 'Subscrever'}
-                      </button>
+            <h3 style={{ color: '#0f172a', marginBottom: '20px' }}>
+              Feed de Vídeos {selectedCategory !== 'Todos' && `- ${selectedCategory}`} ({filteredVideos.length})
+            </h3>
+            
+            {filteredVideos.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '40px', background: '#fff', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
+                <p style={{ color: '#64748b', fontSize: '16px' }}>Nenhum vídeo encontrado para esta categoria.</p>
+              </div>
+            ) : (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
+                {filteredVideos.map(video => (
+                  <div key={video.id} style={{ background: '#fff', borderRadius: '12px', border: '1px solid #cbd5e1', overflow: 'hidden', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+                    <div 
+                      onClick={() => setActiveVideo(video)} 
+                      style={{ 
+                        height: '160px', 
+                        background: video.bgGradient || 'linear-gradient(135deg, #0f172a, #334155)', 
+                        display: 'flex', 
+                        flexDirection: 'column',
+                        alignItems: 'center', 
+                        justifyContent: 'center', 
+                        color: '#fff', 
+                        fontWeight: 'bold', 
+                        cursor: 'pointer', 
+                        textAlign: 'center', 
+                        padding: '15px' 
+                      }}
+                    >
+                      <span style={{ fontSize: '28px', marginBottom: '4px' }}>▶ YouTube</span>
+                      <span style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px', opacity: 0.9 }}>{video.category}</span>
+                    </div>
+                    <div style={{ padding: '15px' }}>
+                      <span style={{ fontSize: '11px', background: '#e2e8f0', padding: '2px 6px', borderRadius: '4px', color: '#475569' }}>{video.category}</span>
+                      <h4 style={{ margin: '8px 0', fontSize: '15px', color: '#0f172a' }}>{video.title}</h4>
+                      <p style={{ fontSize: '12px', color: '#64748b', margin: '0 0 10px 0' }}>{video.channel}</p>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' }}>
+                        <span style={{ fontSize: '12px', color: '#64748b' }}>👍 {video.likes || 0} | 👎 {video.dislikes || 0}</span>
+                        <button 
+                          onClick={() => handleSubscribe(video.channel)}
+                          style={{
+                            background: subscriptions.includes(video.channel) ? '#cbd5e1' : '#ef4444',
+                            color: subscriptions.includes(video.channel) ? '#0f172a' : '#fff',
+                            border: 'none', padding: '4px 10px', borderRadius: '14px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer'
+                          }}
+                        >
+                          {subscriptions.includes(video.channel) ? 'Subscrito ✓' : 'Subscrever'}
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
-        {/* Leitor de Vídeo */}
+        {/* Leitor de Vídeo (Suporta YouTube e Vídeos Diretos) */}
         {activeVideo && (
           <div style={{ background: '#fff', padding: '25px', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
             <button onClick={() => setActiveVideo(null)} style={{ background: '#e2e8f0', border: 'none', padding: '8px 15px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', marginBottom: '20px' }}>
               ← Voltar ao Feed
             </button>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h2 style={{ margin: '0 0 10px 0' }}>{activeVideo.title}</h2>
-              <button onClick={() => handleLike(activeVideo.id)} style={{ background: '#3b82f6', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '20px', fontWeight: 'bold', cursor: 'pointer' }}>
-                👍 {activeVideo.likes || 0} Gostar
-              </button>
+            
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+              <div>
+                <h2 style={{ margin: 0 }}>{activeVideo.title}</h2>
+                <span style={{ fontSize: '13px', color: '#64748b' }}>Canal: {activeVideo.channel} | Categoria: {activeVideo.category}</span>
+              </div>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button 
+                  onClick={() => handleLike(activeVideo.id)} 
+                  style={{ background: '#3b82f6', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '20px', fontWeight: 'bold', cursor: 'pointer' }}
+                >
+                  👍 {activeVideo.likes || 0} Gostar
+                </button>
+                <button 
+                  onClick={() => handleDislike(activeVideo.id)} 
+                  style={{ background: '#64748b', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '20px', fontWeight: 'bold', cursor: 'pointer' }}
+                >
+                  👎 {activeVideo.dislikes || 0} Não Gostar
+                </button>
+              </div>
             </div>
             
-            <div style={{ width: '100%', height: '500px', background: '#000', borderRadius: '8px', overflow: 'hidden', marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <video key={activeVideo.id} src={activeVideo.url} controls autoPlay style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+            <div style={{ width: '100%', height: '520px', background: '#000', borderRadius: '8px', overflow: 'hidden', marginBottom: '20px' }}>
+              {activeVideo.youtubeId ? (
+                <iframe 
+                  width="100%" 
+                  height="100%" 
+                  src={`https://www.youtube-nocookie.com/embed/${activeVideo.youtubeId}?autoplay=1`} 
+                  title={activeVideo.title}
+                  frameBorder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  allowFullScreen
+                />
+              ) : (
+                <video key={activeVideo.id} src={activeVideo.url} controls autoPlay style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+              )}
             </div>
 
             <CommentsSection videoId={activeVideo.id} token={token} userName={userName} />
@@ -268,9 +524,6 @@ const navBtnStyle = (active) => ({
   border: 'none', padding: '6px 12px', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', fontSize: '13px'
 });
 
-/* -------------------------------------------------------------
-   COMPONENTE DE AUTENTICAÇÃO (LOGIN + CRIAR CONTA / REGISTAR)
-------------------------------------------------------------- */
 function AuthTab({ setToken, setUserName, setCurrentTab }) {
   const [isLogin, setIsLogin] = useState(true);
   const [name, setName] = useState('');
@@ -353,9 +606,6 @@ function AuthTab({ setToken, setUserName, setCurrentTab }) {
   );
 }
 
-/* -------------------------------------------------------------
-   COMPONENTE DE GESTÃO E PERSONALIZAÇÃO DO CANAL
-------------------------------------------------------------- */
 function ChannelManagementTab({ channelData, setChannelData, videos, setActiveVideo, setCurrentTab }) {
   const [viewMode, setViewMode] = useState('public');
   const [name, setName] = useState(channelData.name);
@@ -470,9 +720,6 @@ function ChannelManagementTab({ channelData, setChannelData, videos, setActiveVi
   );
 }
 
-/* -------------------------------------------------------------
-   RESTANTES COMPONENTES (COMENTÁRIOS, ANALYTICS, SHORTS, ETC.)
-------------------------------------------------------------- */
 function CommentsSection({ videoId, token, userName }) {
   const [commentText, setCommentText] = useState('');
   const [mbwayPhone, setMbwayPhone] = useState('');
