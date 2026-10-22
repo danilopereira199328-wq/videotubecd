@@ -1,0 +1,38 @@
+[
+  {
+    "id": "a405c85c-b281-48a9-b848-2b20ea7bc372",
+    "name": "teste ",
+    "email": "teste@teste.com",
+    "password": "$2b$10$7vEGFVckNc6iGH.Pi7jU/udAXr5rH1338kfnE.C822KMTTcaMqLzK",
+    "payouts": [
+      {
+        "id": "4f609e3d-f1ce-47af-98fb-9d41af00d087",
+        "method": "paypal",
+        "destination": "danilopereira199328@gmail.com",
+        "amount": 10,
+        "date": "2026-10-21T09:20:55.343Z",
+        "status": "Processado com sucesso"
+      }
+    ]
+  },
+  {
+    "id": "00c4f963-aa7f-404f-bb04-9250a32a31f2",
+    "name": "Danilo Pereira",
+    "email": "danilopereira199328@gmail.com",
+    "password": "$2b$10$8LaU0OIwt5khoHnTgz1yCuOedjbe31PJJYrKAQkOB8wtUb2a1/qre",
+    "payouts": [
+      {
+        "id": "32fdab9f-ef68-4fdf-a642-8bf9c747f96e",
+        "method": "paypal",
+        "destination": "danilopereira199328@gmail.com",
+        "amount": 10,
+        "date": "2026-10-21T11:04:18.813Z",
+        "status": "Processado com sucesso"
+      }
+    ],
+    "subscriptions": [
+      "Pets & Fofuras",
+      "ProGamer Studio"
+    ]
+  }
+]
