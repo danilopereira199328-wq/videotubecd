@@ -15,7 +15,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: '*' } });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 10000;
 const JWT_SECRET = process.env.JWT_SECRET || 'videotube_secret_key_2026';
 
 app.use(cors());
@@ -63,22 +63,24 @@ const authenticateToken = (req, res, next) => {
   if (!token) return res.status(401).json({ error: 'Token não fornecido.' });
 
   jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ error: 'Token inválido.' });
+    if (err) return res.status(403).json({ error: 'Token inválido ou expirado.' });
     req.user = user;
     next();
   });
 };
 
-// WebSockets para Notificações
+// WebSockets para Notificações em Tempo Real
 io.on('connection', (socket) => {
-  console.log('Utilizador ligado via WebSocket:', socket.id);
-  socket.on('disconnect', () => console.log('Utilizador desligado'));
+  console.log('Cliente ligado via WebSocket:', socket.id);
+  socket.on('disconnect', () => console.log('Cliente desligado'));
 });
 
 // Autenticação
 app.post('/api/auth/register', async (req, res) => {
   try {
     const { name, email, password } = req.body;
+    if (!email || !password || !name) return res.status(400).json({ error: 'Preencha todos os campos.' });
+
     const users = readUsers();
     if (users.find(u => u.email === email)) return res.status(400).json({ error: 'Email já registado.' });
 
@@ -109,7 +111,7 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
-// Subscrever canais
+// Subscrições
 app.post('/api/subscribe', authenticateToken, (req, res) => {
   try {
     const { channelName } = req.body;
@@ -132,7 +134,49 @@ app.post('/api/subscribe', authenticateToken, (req, res) => {
   }
 });
 
-// Likes e Dislikes
+// Algoritmo de Recomendações e Tendências
+app.get('/api/videos/recommendations', (req, res) => {
+  try {
+    const videos = readVideos();
+    const comments = readComments();
+
+    const rankedVideos = videos.map(video => {
+      let score = 0;
+      const videoComments = comments.filter(c => c.videoId === video.id).length;
+      
+      score += (video.likes || 0) * 5;
+      score += (video.viewsCount || 0) * 2;
+      score += videoComments * 4;
+
+      return { ...video, score };
+    });
+
+    rankedVideos.sort((a, b) => b.score - a.score);
+    res.json(rankedVideos);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Lista Geral de Vídeos
+app.get('/api/videos', (req, res) => {
+  try {
+    let videos = readVideos();
+    const { sortBy } = req.query;
+
+    if (sortBy === 'date') {
+      videos.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    } else if (sortBy === 'views') {
+      videos.sort((a, b) => (b.viewsCount || 0) - (a.viewsCount || 0));
+    }
+
+    res.json(videos);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Likes
 app.post('/api/videos/:id/like', authenticateToken, (req, res) => {
   try {
     const videos = readVideos();
@@ -147,25 +191,80 @@ app.post('/api/videos/:id/like', authenticateToken, (req, res) => {
   }
 });
 
-// Listar Vídeos
-app.get('/api/videos', (req, res) => {
+// Comentários Persistentes
+app.get('/api/comments/:videoId', (req, res) => {
   try {
-    let videos = readVideos();
-    res.json(videos);
+    const comments = readComments();
+    res.json(comments.filter(c => c.videoId === req.params.videoId));
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Upload de Vídeo + Notificação WebSocket aos Subscritores
+app.post('/api/comments', authenticateToken, (req, res) => {
+  try {
+    const { videoId, text, userName } = req.body;
+    if (!text || !videoId) return res.status(400).json({ error: 'Comentário inválido.' });
+
+    const comments = readComments();
+    const newComment = {
+      id: uuidv4(),
+      videoId,
+      userName: userName || req.user.email,
+      text,
+      createdAt: new Date().toISOString()
+    };
+
+    comments.push(newComment);
+    writeComments(comments);
+
+    res.status(201).json(newComment);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Pagamento de Super Chat (MB WAY)
+app.post('/api/payments/superchat', authenticateToken, (req, res) => {
+  try {
+    const { videoId, amount, message, phoneNumber, userName } = req.body;
+    if (!amount || amount <= 0 || !phoneNumber) return res.status(400).json({ error: 'Dados de MB WAY inválidos.' });
+
+    const comments = readComments();
+    const superChatComment = {
+      id: uuidv4(),
+      videoId,
+      userName: userName || req.user.email,
+      text: `💰 SUPER CHAT (€${parseFloat(amount).toFixed(2)}): ${message}`,
+      isSuperChat: true,
+      amount: parseFloat(amount),
+      createdAt: new Date().toISOString()
+    };
+
+    comments.push(superChatComment);
+    writeComments(comments);
+
+    io.emit('superChatNotification', superChatComment);
+
+    res.json({
+      success: true,
+      message: `Notificação MB WAY enviada para o número ${phoneNumber}. Confirme o pagamento na app MB WAY!`,
+      comment: superChatComment
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Upload de Vídeo
 app.post('/api/upload', authenticateToken, upload.single('video'), (req, res) => {
   try {
-    if (!req.file) return res.status(400).json({ error: 'Ficheiro em falta.' });
+    if (!req.file) return res.status(400).json({ error: 'Ficheiro não recebido.' });
 
     const { title, description, tags, category } = req.body;
     const newVideo = {
       id: uuidv4(),
-      title: title || 'Sem título',
+      title: title || 'Vídeo sem título',
       description: description || '',
       tags: tags || '',
       category: category || 'Geral',
@@ -180,17 +279,51 @@ app.post('/api/upload', authenticateToken, upload.single('video'), (req, res) =>
     videos.unshift(newVideo);
     writeVideos(videos);
 
-    // Emitir notificação em tempo real via WebSocket para todos os clientes conectados
     io.emit('newVideoNotification', {
       title: newVideo.title,
       channel: newVideo.channel,
-      message: `O canal ${newVideo.channel} publicou um novo vídeo: "${newVideo.title}"!`
+      message: `O canal ${newVideo.channel} acabou de publicar: "${newVideo.title}"!`
     });
 
-    res.json({ message: 'Vídeo publicado!', video: newVideo });
+    res.json({ message: 'Vídeo publicado com sucesso!', video: newVideo });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-server.listen(PORT, () => console.log(`Servidor robusto ativo na porta ${PORT}`));
+// Eliminar Vídeo
+app.delete('/api/videos/:id', authenticateToken, (req, res) => {
+  try {
+    let videos = readVideos();
+    const index = videos.findIndex(v => v.id === req.params.id);
+    if (index === -1) return res.status(404).json({ error: 'Vídeo não encontrado.' });
+
+    videos.splice(index, 1);
+    writeVideos(videos);
+    res.json({ message: 'Vídeo removido!' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Payouts
+app.post('/api/monetization/payout', authenticateToken, (req, res) => {
+  try {
+    const { payoutMethod, destination, amount } = req.body;
+    const users = readUsers();
+    const userIndex = users.findIndex(u => u.id === req.user.userId);
+    if (userIndex === -1) return res.status(404).json({ error: 'Utilizador não encontrado.' });
+
+    if (!users[userIndex].payouts) users[userIndex].payouts = [];
+    const payoutRecord = { id: uuidv4(), method: payoutMethod, destination, amount: parseFloat(amount), date: new Date().toISOString() };
+
+    users[userIndex].payouts.push(payoutRecord);
+    writeUsers(users);
+
+    res.json({ message: `Levantamento de €${parseFloat(amount).toFixed(2)} solicitado com sucesso!`, payout: payoutRecord });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+server.listen(PORT, () => console.log(`Servidor ativo na porta ${PORT}`));
