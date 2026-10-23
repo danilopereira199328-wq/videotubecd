@@ -53,17 +53,7 @@ export default function App() {
     { id: '2', title: 'Gameplay Épico - Melhores Momentos de Esports', description: 'Jogadas incríveis do torneio.', category: 'Gaming', channel: 'ProGamer Studio', viewsCount: 142000, likes: 850, dislikes: 14, bgGradient: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', youtubeId: 'WPkNGR5UAdg' },
     { id: '3', title: 'Concerto Acústico ao Vivo - Guitarra & Relaxamento', description: 'Sessão musical acústica.', category: 'Música', channel: 'Som & Sintonia', viewsCount: 53200, likes: 410, dislikes: 5, bgGradient: 'linear-gradient(135deg, #ec4899, #be185d)', youtubeId: 'TZj7lGAAGVw' },
     { id: '4', title: 'Análise de Tecnologia: Inteligência Artificial e Gadgets', description: 'Análise detalhada de hardware.', category: 'Tecnologia', channel: 'Tech Zone PT', viewsCount: 89100, likes: 670, dislikes: 12, bgGradient: 'linear-gradient(135deg, #06b6d4, #0e7490)', youtubeId: 'JDm5TbfDRaM' },
-    { id: '5', title: 'Os Bastidores do Cinema e Trailers Imperdíveis', description: 'Produções cinematográficas.', category: 'Entretenimento', channel: 'CineMundo', viewsCount: 32400, likes: 290, dislikes: 3, bgGradient: 'linear-gradient(135deg, #8b5cf6, #6d28d9)', youtubeId: 'Gt5dAxm_BEE' },
-    { id: '6', title: 'Resumo de Futebol e os Melhores Golos da Época', description: 'Análise tática e grandes jogadas.', category: 'Desporto', channel: 'Arena Desportiva', viewsCount: 210000, likes: 1890, dislikes: 45, bgGradient: 'linear-gradient(135deg, #10b981, #047857)', youtubeId: 'y-mnyvIOpVM' },
-    { id: '7', title: 'Aprender JavaScript e React para Iniciantes', description: 'Tutorial prático web.', category: 'Educação', channel: 'Academia do Código', viewsCount: 45000, likes: 980, dislikes: 8, bgGradient: 'linear-gradient(135deg, #6366f1, #4338ca)', youtubeId: 'w7ejDZ8SWv8' },
-    { id: '8', title: 'Notícias do Dia: Resumo da Atualidade Internacional', description: 'Resumo diário de eventos.', category: 'Notícias', channel: 'InfoGlobal 24', viewsCount: 67800, likes: 340, dislikes: 20, bgGradient: 'linear-gradient(135deg, #64748b, #334155)', youtubeId: 'Wgop5aph9Bw' },
-    { id: '9', title: 'Podcast em Estúdio: Conversas sobre o Futuro', description: 'Entrevista com especialistas.', category: 'Podcasts', channel: 'Conversas Abertas', viewsCount: 28900, likes: 510, dislikes: 6, bgGradient: 'linear-gradient(135deg, #14b8a6, #0f766e)', youtubeId: 'uKAePqGq8bM' },
-    { id: '10', title: 'Especial Stand-Up Comedy: Risos Garantidos', description: 'Momentos hilariantes.', category: 'Comédia', channel: 'Clube do Riso', viewsCount: 95400, likes: 1420, dislikes: 18, bgGradient: 'linear-gradient(135deg, #f97316, #c2410c)', youtubeId: '4KfLSOMd3zU' },
-    { id: '11', title: 'Receitas Rápidas na Air Fryer e Dicas de Cozinha', description: 'Pratos deliciosos e saudáveis.', category: 'Culinária', channel: 'Cozinha Prática', viewsCount: 81200, likes: 1100, dislikes: 12, bgGradient: 'linear-gradient(135deg, #84cc16, #4d7c0f)', youtubeId: 'AlVrpscQmzA' },
-    { id: '12', title: 'Guia de Viagens: As Melhores Paisagens de Portugal', description: 'Roteiro pelas serras e rios.', category: 'Viagens', channel: 'Portugal a Pé', viewsCount: 64300, likes: 890, dislikes: 9, bgGradient: 'linear-gradient(135deg, #0ea5e9, #0369a1)', youtubeId: 'KweOzJlYE3s' },
-    { id: '13', title: 'Documentário de Ciência: Os Mistérios do Universo', description: 'Descobertas da astrofísica.', category: 'Ciência', channel: 'Ciência Viva', viewsCount: 115000, likes: 1650, dislikes: 15, bgGradient: 'linear-gradient(135deg, #a855f7, #7e22ce)', youtubeId: 'sVzrGpdYBlo' },
-    { id: '14', title: 'Dicas de Moda, Vestuário e Cuidados Pessoais', description: 'Estilo e rotinas de skincare.', category: 'Moda & Beleza', channel: 'Estilo & Tendência', viewsCount: 49200, likes: 720, dislikes: 8, bgGradient: 'linear-gradient(135deg, #fb7185, #e11d48)', youtubeId: 'EONayBEGQG4' },
-    { id: '15', title: 'Curtas Divertidas e Animações em 60 Segundos', description: 'Micro-histórias rápidas.', category: 'Curtas', channel: 'Mini Stories', viewsCount: 93000, likes: 1300, dislikes: 10, bgGradient: 'linear-gradient(135deg, #fbbf24, #b45309)', youtubeId: 'm0n_UZCUN6E' }
+    { id: '5', title: 'Os Bastidores do Cinema e Trailers Imperdíveis', description: 'Produções cinematográficas.', category: 'Entretenimento', channel: 'CineMundo', viewsCount: 32400, likes: 290, dislikes: 3, bgGradient: 'linear-gradient(135deg, #8b5cf6, #6d28d9)', youtubeId: 'Gt5dAxm_BEE' }
   ];
 
   const [videos, setVideos] = useState(initialVideos);
@@ -306,15 +296,19 @@ export default function App() {
             </div>
             
             <div style={{ width: '100%', height: '520px', background: '#000', borderRadius: '8px', overflow: 'hidden', marginBottom: '15px' }}>
-              <iframe 
-                width="100%" 
-                height="100%" 
-                src={`https://www.youtube-nocookie.com/embed/${activeVideo.youtubeId}?autoplay=1&start=${playbackPositions[activeVideo.id] || 0}`} 
-                title={activeVideo.title}
-                frameBorder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowFullScreen
-              />
+              {activeVideo.url && activeVideo.url.startsWith('http') && !activeVideo.youtubeId ? (
+                <video src={activeVideo.url} controls autoPlay style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+              ) : (
+                <iframe 
+                  width="100%" 
+                  height="100%" 
+                  src={`https://www.youtube-nocookie.com/embed/${activeVideo.youtubeId || 'PmrJFdurf3s'}?autoplay=1&start=${playbackPositions[activeVideo.id] || 0}`} 
+                  title={activeVideo.title}
+                  frameBorder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  allowFullScreen
+                />
+              )}
             </div>
 
             {/* Guardar Posição do Vídeo */}
@@ -348,7 +342,7 @@ const navBtnStyle = (active, darkMode) => ({
   border: 'none', padding: '6px 10px', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', fontSize: '13px'
 });
 
-// 4. Seção de Comentários em Tempo Real com Filtro de Spam
+// Comentários em Tempo Real com Filtro de Spam
 function RealTimeCommentsSection({ videoId, token, userName, socket, themeStyle }) {
   const [commentText, setCommentText] = useState('');
   const [comments, setComments] = useState([]);
@@ -372,7 +366,6 @@ function RealTimeCommentsSection({ videoId, token, userName, socket, themeStyle 
     if (!commentText.trim()) return;
     if (!token) return alert('Faça login para comentar!');
 
-    // Filtro Automático de Spam e Linguagem Inapropriada
     const hasBadWord = BAD_WORDS.some(word => commentText.toLowerCase().includes(word));
     if (hasBadWord) {
       alert('⚠️ O seu comentário contém palavras inadequadas ou spam e foi bloqueado.');
@@ -395,7 +388,7 @@ function RealTimeCommentsSection({ videoId, token, userName, socket, themeStyle 
       <form onSubmit={handleSendComment} style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
         <input 
           type="text" 
-          placeholder="Escreva um comentário público (com filtro automático de spam)..." 
+          placeholder="Escreva um comentário público..." 
           value={commentText} 
           onChange={e => setCommentText(e.target.value)} 
           style={{ width: '100%', padding: '8px', borderRadius: '6px', border: `1px solid ${themeStyle.cardBorder}`, background: themeStyle.inputBg, color: themeStyle.color }} 
@@ -587,16 +580,6 @@ function ChannelManagementTab({ channelData, setChannelData, videos, setActiveVi
               <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>Descrição:</label>
               <textarea value={description} onChange={e => setDescription(e.target.value)} rows="3" style={{ width: '100%', padding: '10px', borderRadius: '6px', border: `1px solid ${themeStyle.cardBorder}`, background: themeStyle.inputBg, color: themeStyle.color }}></textarea>
             </div>
-            <div style={{ padding: '15px', borderRadius: '8px', border: `1px dashed ${themeStyle.cardBorder}` }}>
-              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>🖼️ Carregar Fotografia de Perfil (Avatar):</label>
-              <input type="file" accept="image/*" onChange={e => e.target.files[0] && setAvatarPreview(URL.createObjectURL(e.target.files[0]))} style={{ marginBottom: '10px' }} />
-              {avatarPreview && <img src={avatarPreview} alt="Preview Avatar" style={{ width: '70px', height: '70px', borderRadius: '50%', objectFit: 'cover' }} />}
-            </div>
-            <div style={{ padding: '15px', borderRadius: '8px', border: `1px dashed ${themeStyle.cardBorder}` }}>
-              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>🎨 Carregar Capa / Banner do Canal:</label>
-              <input type="file" accept="image/*" onChange={e => e.target.files[0] && setBannerPreview(URL.createObjectURL(e.target.files[0]))} style={{ marginBottom: '10px' }} />
-              {bannerPreview && <img src={bannerPreview} alt="Preview Banner" style={{ width: '100%', height: '100px', borderRadius: '6px', objectFit: 'cover' }} />}
-            </div>
             <button type="submit" style={{ background: '#ef4444', color: '#fff', border: 'none', padding: '12px', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}>Guardar Alterações</button>
           </form>
         </div>
@@ -605,37 +588,102 @@ function ChannelManagementTab({ channelData, setChannelData, videos, setActiveVi
   );
 }
 
-function UploadTab({ categories, setVideos, videos, setCurrentTab, themeStyle }) {
+// 📤 Aba de Upload atualizada com envio direto de vídeo do computador para a Nuvem
+function UploadTab({ categories, setVideos, videos, setCurrentTab, token, themeStyle }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [tags, setTags] = useState('');
   const [category, setCategory] = useState(categories[1] || 'Gaming');
+  const [videoFile, setVideoFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
-  const handleUploadSubmit = (e) => {
+  const handleUploadSubmit = async (e) => {
     e.preventDefault();
-    const newVid = {
-      id: Date.now().toString(),
-      title, description, category,
-      channel: 'O Meu Canal',
-      viewsCount: 0, likes: 0, dislikes: 0,
-      youtubeId: 'dQw4w9WgXcQ'
-    };
-    setVideos([newVid, ...videos]);
-    alert('Vídeo publicado com sucesso!');
-    setCurrentTab('home');
+    if (!token) {
+      alert('Por favor, inicia sessão para fazer upload de vídeos!');
+      setCurrentTab('auth');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('category', category);
+    formData.append('tags', tags);
+    if (videoFile) {
+      formData.append('video', videoFile);
+    }
+
+    try {
+      setUploading(true);
+      const res = await axios.post(`${API_URL}/upload`, formData, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      setVideos([res.data.video, ...videos]);
+      alert('Vídeo publicado e guardado na nuvem com sucesso!');
+      setCurrentTab('home');
+    } catch (err) {
+      alert('Erro ao fazer upload do vídeo para a nuvem.');
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
     <div style={{ maxWidth: '650px', margin: '0 auto', background: themeStyle.cardBg, padding: '30px', borderRadius: '12px', border: `1px solid ${themeStyle.cardBorder}` }}>
-      <h2>📥 Enviar Novo Vídeo</h2>
+      <h2>📥 Enviar Novo Vídeo (Cloud Upload)</h2>
       <form onSubmit={handleUploadSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '20px' }}>
-        <input type="text" placeholder="Título" value={title} onChange={e => setTitle(e.target.value)} required style={{ padding: '10px', borderRadius: '6px', border: `1px solid ${themeStyle.cardBorder}`, background: themeStyle.inputBg, color: themeStyle.color }} />
-        <textarea placeholder="Descrição" value={description} onChange={e => setDescription(e.target.value)} rows="3" style={{ padding: '10px', borderRadius: '6px', border: `1px solid ${themeStyle.cardBorder}`, background: themeStyle.inputBg, color: themeStyle.color }}></textarea>
-        <input type="text" placeholder="Tags (ex: pets, gaming)" value={tags} onChange={e => setTags(e.target.value)} style={{ padding: '10px', borderRadius: '6px', border: `1px solid ${themeStyle.cardBorder}`, background: themeStyle.inputBg, color: themeStyle.color }} />
-        <select value={category} onChange={e => setCategory(e.target.value)} style={{ padding: '10px', borderRadius: '6px', border: `1px solid ${themeStyle.cardBorder}`, background: themeStyle.inputBg, color: themeStyle.color }}>
+        <div>
+          <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>🎞️ Selecionar Ficheiro de Vídeo (.mp4, .mov):</label>
+          <input 
+            type="file" 
+            accept="video/*" 
+            onChange={e => setVideoFile(e.target.files[0])} 
+            required 
+            style={{ width: '100%', padding: '10px', borderRadius: '6px', border: `1px dashed ${themeStyle.cardBorder}`, background: themeStyle.inputBg, color: themeStyle.color }} 
+          />
+        </div>
+        <input 
+          type="text" 
+          placeholder="Título do Vídeo" 
+          value={title} 
+          onChange={e => setTitle(e.target.value)} 
+          required 
+          style={{ padding: '10px', borderRadius: '6px', border: `1px solid ${themeStyle.cardBorder}`, background: themeStyle.inputBg, color: themeStyle.color }} 
+        />
+        <textarea 
+          placeholder="Descrição detalhada" 
+          value={description} 
+          onChange={e => setDescription(e.target.value)} 
+          rows="3" 
+          style={{ padding: '10px', borderRadius: '6px', border: `1px solid ${themeStyle.cardBorder}`, background: themeStyle.inputBg, color: themeStyle.color }}
+        ></textarea>
+        <input 
+          type="text" 
+          placeholder="Tags (ex: pets, gaming, tutorial)" 
+          value={tags} 
+          onChange={e => setTags(e.target.value)} 
+          style={{ padding: '10px', borderRadius: '6px', border: `1px solid ${themeStyle.cardBorder}`, background: themeStyle.inputBg, color: themeStyle.color }} 
+        />
+        <select 
+          value={category} 
+          onChange={e => setCategory(e.target.value)} 
+          style={{ padding: '10px', borderRadius: '6px', border: `1px solid ${themeStyle.cardBorder}`, background: themeStyle.inputBg, color: themeStyle.color }}
+        >
           {categories.filter(c => c !== 'Todos').map(cat => <option key={cat} value={cat}>{cat}</option>)}
         </select>
-        <button type="submit" style={{ background: '#ef4444', color: '#fff', padding: '12px', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}>Publicar</button>
+        
+        <button 
+          type="submit" 
+          disabled={uploading} 
+          style={{ background: '#ef4444', color: '#fff', padding: '12px', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', opacity: uploading ? 0.7 : 1 }}
+        >
+          {uploading ? 'A enviar para a nuvem...' : 'Publicar Vídeo'}
+        </button>
       </form>
     </div>
   );
