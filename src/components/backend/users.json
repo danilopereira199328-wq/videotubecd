@@ -12,6 +12,13 @@
         "amount": 10,
         "date": "2026-10-21T09:20:55.343Z",
         "status": "Processado com sucesso"
+      },
+      {
+        "id": "6366a1d3-87fd-4a44-ba5a-d25da2980c44",
+        "method": "paypal",
+        "destination": "danilopereira199328@gmail.com",
+        "amount": 10,
+        "date": "2026-10-23T09:14:20.568Z"
       }
     ],
     "subscriptions": [
