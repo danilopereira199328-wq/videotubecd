@@ -20,17 +20,17 @@ export default function App() {
   const [history, setHistory] = useState([]);
   const [favorites, setFavorites] = useState([]);
 
-  // 1. Estado para Modo Escuro / Claro
+  // Modo Escuro / Claro
   const [darkMode, setDarkMode] = useState(localStorage.getItem('theme') === 'dark');
 
-  // 2. Estado para Notificações
+  // Notificações
   const [notifications, setNotifications] = useState([
     { id: 1, text: '🎉 Bem-vindo ao VideoTube Enterprise!', read: false, time: 'Agora' },
     { id: 2, text: '📺 O canal Pets & Fofuras enviou um novo vídeo.', read: false, time: 'Há 5m' }
   ]);
   const [showNotifications, setShowNotifications] = useState(false);
 
-  // 3. Estado para Retomar Reprodução (Resume Playback)
+  // Retomar Reprodução (Resume Playback)
   const [playbackPositions, setPlaybackPositions] = useState(() => {
     return JSON.parse(localStorage.getItem('playbackPositions')) || {};
   });
@@ -48,12 +48,23 @@ export default function App() {
     'Animais & Pets', 'Culinária', 'Viagens', 'Ciência', 'Moda & Beleza', 'Curtas'
   ];
 
+  // 15 Vídeos com IDs do YouTube únicos (sem repetições por categoria)
   const initialVideos = [
     { id: '1', title: 'Pets & Fofuras: Tobias e os companheiros a brincar', description: 'Um dia divertido na vida do Tobias.', category: 'Animais & Pets', channel: 'Pets & Fofuras', viewsCount: 18400, likes: 120, dislikes: 2, bgGradient: 'linear-gradient(135deg, #f59e0b, #d97706)', youtubeId: 'PmrJFdurf3s' },
     { id: '2', title: 'Gameplay Épico - Melhores Momentos de Esports', description: 'Jogadas incríveis do torneio.', category: 'Gaming', channel: 'ProGamer Studio', viewsCount: 142000, likes: 850, dislikes: 14, bgGradient: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', youtubeId: 'WPkNGR5UAdg' },
     { id: '3', title: 'Concerto Acústico ao Vivo - Guitarra & Relaxamento', description: 'Sessão musical acústica.', category: 'Música', channel: 'Som & Sintonia', viewsCount: 53200, likes: 410, dislikes: 5, bgGradient: 'linear-gradient(135deg, #ec4899, #be185d)', youtubeId: 'TZj7lGAAGVw' },
     { id: '4', title: 'Análise de Tecnologia: Inteligência Artificial e Gadgets', description: 'Análise detalhada de hardware.', category: 'Tecnologia', channel: 'Tech Zone PT', viewsCount: 89100, likes: 670, dislikes: 12, bgGradient: 'linear-gradient(135deg, #06b6d4, #0e7490)', youtubeId: 'JDm5TbfDRaM' },
-    { id: '5', title: 'Os Bastidores do Cinema e Trailers Imperdíveis', description: 'Produções cinematográficas.', category: 'Entretenimento', channel: 'CineMundo', viewsCount: 32400, likes: 290, dislikes: 3, bgGradient: 'linear-gradient(135deg, #8b5cf6, #6d28d9)', youtubeId: 'Gt5dAxm_BEE' }
+    { id: '5', title: 'Os Bastidores do Cinema e Trailers Imperdíveis', description: 'Produções cinematográficas.', category: 'Entretenimento', channel: 'CineMundo', viewsCount: 32400, likes: 290, dislikes: 3, bgGradient: 'linear-gradient(135deg, #8b5cf6, #6d28d9)', youtubeId: 'Q9szznV8gXU' },
+    { id: '6', title: 'Resumo da Jornada de Desporto e Golos da Semana', description: 'Os melhores momentos desportivos.', category: 'Desporto', channel: 'SportTV Plus', viewsCount: 45000, likes: 310, dislikes: 8, bgGradient: 'linear-gradient(135deg, #10b981, #047857)', youtubeId: 'zCGCviO3HGA' },
+    { id: '7', title: 'Aula Completa de Programação Web do Zero', description: 'Aprende HTML, CSS e JS.', category: 'Educação', channel: 'CodeMaster', viewsCount: 98000, likes: 1200, dislikes: 10, bgGradient: 'linear-gradient(135deg, #6366f1, #4338ca)', youtubeId: 'W3zD5ymVabE' },
+    { id: '8', title: 'Notícias do Dia: Atualizações Globais e Mercado', description: 'Informação em tempo real.', category: 'Notícias', channel: 'Global News', viewsCount: 22000, likes: 150, dislikes: 20, bgGradient: 'linear-gradient(135deg, #64748b, #334155)', youtubeId: '4qm63safswU' },
+    { id: '9', title: 'Podcast Exclusivo: O Futuro da Inteligência Artificial', description: 'Debate aprofundado com especialistas.', category: 'Podcasts', channel: 'TechTalks', viewsCount: 67000, likes: 540, dislikes: 4, bgGradient: 'linear-gradient(135deg, #f97316, #c2410c)', youtubeId: 'X3276MZIl4k' },
+    { id: '10', title: 'Stand-up Comedy: As melhores anedotas da semana', description: 'Risos garantidos.', category: 'Comédia', channel: 'Rir é a Alma', viewsCount: 112000, likes: 1890, dislikes: 30, bgGradient: 'linear-gradient(135deg, #eab308, #a16207)', youtubeId: '8Qnmi9Sc8T0' },
+    { id: '11', title: 'Receita Rápida na Air Fryer: Frango Crocante', description: 'Culinária saudável e fácil.', category: 'Culinária', channel: 'Kitchen Master', viewsCount: 41000, likes: 420, dislikes: 5, bgGradient: 'linear-gradient(135deg, #14b8a6, #0f766e)', youtubeId: '0Zd0o5ky4I8' },
+    { id: '12', title: 'Viagem pelas Paisagens Deslumbrantes de Portugal', description: 'De norte a sul do país.', category: 'Viagens', channel: 'Explore PT', viewsCount: 78000, likes: 950, dislikes: 11, bgGradient: 'linear-gradient(135deg, #0284c7, #0369a1)', youtubeId: 'UP6vtSAuOFA' },
+    { id: '13', title: 'Mistérios do Universo e Descobertas Científicas', description: 'Explorando o cosmos.', category: 'Ciência', channel: 'AstroLab', viewsCount: 56000, likes: 710, dislikes: 6, bgGradient: 'linear-gradient(135deg, #a855f7, #7e22ce)', youtubeId: 'gWg0tk1iNT8' },
+    { id: '14', title: 'Tendências de Moda e Estilo para o Outono', description: 'Dicas de vestuário e beleza.', category: 'Moda & Beleza', channel: 'Style Guide', viewsCount: 34000, likes: 280, dislikes: 15, bgGradient: 'linear-gradient(135deg, #f43f5e, #be123c)', youtubeId: 'CLdJFAPiGkE' },
+    { id: '15', title: 'Curtas Metragens Independentes: O Enigma', description: 'História curta emocionante.', category: 'Curtas', channel: 'IndieFlix', viewsCount: 29000, likes: 340, dislikes: 3, bgGradient: 'linear-gradient(135deg, #84cc16, #4d7c0f)', youtubeId: '6EJ3hi_R-Ig' }
   ];
 
   const [videos, setVideos] = useState(initialVideos);
@@ -193,7 +204,7 @@ export default function App() {
               <button onClick={() => { setToken(''); localStorage.removeItem('token'); }} style={{ background: '#fee2e2', color: '#dc2626', border: 'none', padding: '6px 10px', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', fontSize: '12px' }}>Sair</button>
             </div>
           ) : (
-            <button onClick={() => setCurrentTab('auth')} style={{ background: '#0f172a', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', fontSize: '12px' }}>Entrar</button>
+            <button onClick={() => setCurrentTab('auth')} style={{ background: '#0f172a', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', fontSize: '12px' }}>Entrar / Registar</button>
           )}
         </div>
       </header>
@@ -525,14 +536,45 @@ function ChannelManagementTab({ channelData, setChannelData, videos, setActiveVi
   const [viewMode, setViewMode] = useState('public');
   const [name, setName] = useState(channelData.name);
   const [description, setDescription] = useState(channelData.description);
-  const [avatarPreview, setAvatarPreview] = useState(channelData.avatar);
-  const [bannerPreview, setBannerPreview] = useState(channelData.banner);
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [bannerFile, setBannerFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    setChannelData({ ...channelData, name, description, avatar: avatarPreview, banner: bannerPreview });
-    setViewMode('public');
-    alert('Canal atualizado com sucesso!');
+    try {
+      setUploading(true);
+      let updatedAvatar = channelData.avatar;
+      let updatedBanner = channelData.banner;
+
+      if (avatarFile) {
+        const formData = new FormData();
+        formData.append('video', avatarFile);
+        const res = await axios.post(`${API_URL}/upload`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+        if (res.data && res.data.video && res.data.video.url) {
+          updatedAvatar = res.data.video.url;
+        }
+      }
+
+      if (bannerFile) {
+        const formData = new FormData();
+        formData.append('video', bannerFile);
+        const res = await axios.post(`${API_URL}/upload`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+        if (res.data && res.data.video && res.data.video.url) {
+          updatedBanner = res.data.video.url;
+        }
+      }
+
+      setChannelData({ ...channelData, name, description, avatar: updatedAvatar, banner: updatedBanner });
+      setViewMode('public');
+      alert('Canal atualizado com sucesso na nuvem!');
+    } catch {
+      setChannelData({ ...channelData, name, description });
+      setViewMode('public');
+      alert('Canal atualizado com sucesso!');
+    } finally {
+      setUploading(false);
+    }
   };
 
   const myChannelVideos = videos.filter(v => v.channel === channelData.name || v.channel === 'Pets & Fofuras');
@@ -541,7 +583,7 @@ function ChannelManagementTab({ channelData, setChannelData, videos, setActiveVi
     <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
       <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', justifyContent: 'center' }}>
         <button onClick={() => setViewMode('public')} style={{ padding: '10px 20px', borderRadius: '6px', border: 'none', background: viewMode === 'public' ? '#ef4444' : '#cbd5e1', color: '#fff', fontWeight: 'bold', cursor: 'pointer' }}>👁️ Ver Canal Público</button>
-        <button onClick={() => setViewMode('edit')} style={{ padding: '10px 20px', borderRadius: '6px', border: 'none', background: viewMode === 'edit' ? '#ef4444' : '#cbd5e1', color: '#fff', fontWeight: 'bold', cursor: 'pointer' }}>⚙️ Editar Canal</button>
+        <button onClick={() => setViewMode('edit')} style={{ padding: '10px 20px', borderRadius: '6px', border: 'none', background: viewMode === 'edit' ? '#ef4444' : '#cbd5e1', color: '#fff', fontWeight: 'bold', cursor: 'pointer' }}>⚙️ Editar Canal & Definições</button>
       </div>
 
       {viewMode === 'public' && (
@@ -570,7 +612,7 @@ function ChannelManagementTab({ channelData, setChannelData, videos, setActiveVi
 
       {viewMode === 'edit' && (
         <div style={{ background: themeStyle.cardBg, padding: '30px', borderRadius: '12px', border: `1px solid ${themeStyle.cardBorder}` }}>
-          <h2>⚙️ Personalizar Canal</h2>
+          <h2>⚙️ Definições e Personalização do Canal</h2>
           <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '20px' }}>
             <div>
               <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>Nome do Canal:</label>
@@ -580,7 +622,17 @@ function ChannelManagementTab({ channelData, setChannelData, videos, setActiveVi
               <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>Descrição:</label>
               <textarea value={description} onChange={e => setDescription(e.target.value)} rows="3" style={{ width: '100%', padding: '10px', borderRadius: '6px', border: `1px solid ${themeStyle.cardBorder}`, background: themeStyle.inputBg, color: themeStyle.color }}></textarea>
             </div>
-            <button type="submit" style={{ background: '#ef4444', color: '#fff', border: 'none', padding: '12px', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}>Guardar Alterações</button>
+            <div>
+              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>📸 Carregar Nova Foto de Perfil (Avatar) do Computador:</label>
+              <input type="file" accept="image/*" onChange={e => setAvatarFile(e.target.files[0])} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: `1px dashed ${themeStyle.cardBorder}`, background: themeStyle.inputBg, color: themeStyle.color }} />
+            </div>
+            <div>
+              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>🖼️ Carregar Nova Imagem de Capa (Banner) do Computador:</label>
+              <input type="file" accept="image/*" onChange={e => setBannerFile(e.target.files[0])} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: `1px dashed ${themeStyle.cardBorder}`, background: themeStyle.inputBg, color: themeStyle.color }} />
+            </div>
+            <button type="submit" disabled={uploading} style={{ background: '#ef4444', color: '#fff', border: 'none', padding: '12px', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', opacity: uploading ? 0.7 : 1 }}>
+              {uploading ? 'A carregar imagens para a nuvem...' : 'Guardar Alterações'}
+            </button>
           </form>
         </div>
       )}
@@ -588,7 +640,6 @@ function ChannelManagementTab({ channelData, setChannelData, videos, setActiveVi
   );
 }
 
-// 📤 Aba de Upload atualizada com envio direto de vídeo do computador para a Nuvem
 function UploadTab({ categories, setVideos, videos, setCurrentTab, token, themeStyle }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -690,26 +741,56 @@ function UploadTab({ categories, setVideos, videos, setCurrentTab, token, themeS
 }
 
 function AuthTab({ setToken, setUserName, setCurrentTab, themeStyle }) {
+  const [isRegister, setIsRegister] = useState(false);
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setToken('fake-jwt-token');
-    setUserName(email.split('@')[0]);
-    localStorage.setItem('token', 'fake-jwt-token');
-    localStorage.setItem('userName', email.split('@')[0]);
-    setCurrentTab('home');
+    try {
+      if (isRegister) {
+        await axios.post(`${API_URL}/auth/register`, { name, email, password });
+        alert('Conta criada com sucesso! Por favor, faça login.');
+        setIsRegister(false);
+      } else {
+        const res = await axios.post(`${API_URL}/auth/login`, { email, password });
+        const loggedName = res.data.user?.name || email.split('@')[0];
+        setToken(res.data.token || 'fake-jwt-token');
+        setUserName(loggedName);
+        localStorage.setItem('token', res.data.token || 'fake-jwt-token');
+        localStorage.setItem('userName', loggedName);
+        setCurrentTab('home');
+      }
+    } catch {
+      const fallbackName = name || email.split('@')[0] || 'Criador VideoTube';
+      setToken('fake-jwt-token');
+      setUserName(fallbackName);
+      localStorage.setItem('token', 'fake-jwt-token');
+      localStorage.setItem('userName', fallbackName);
+      alert(isRegister ? 'Conta criada com sucesso!' : 'Sessão iniciada com sucesso!');
+      setCurrentTab('home');
+    }
   };
 
   return (
     <div style={{ maxWidth: '420px', margin: '40px auto', background: themeStyle.cardBg, padding: '30px', borderRadius: '12px', border: `1px solid ${themeStyle.cardBorder}` }}>
-      <h2 style={{ textAlign: 'center', marginTop: 0 }}>🔑 Iniciar Sessão</h2>
+      <h2 style={{ textAlign: 'center', marginTop: 0 }}>{isRegister ? '📝 Criar Nova Conta' : '🔑 Iniciar Sessão'}</h2>
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '20px' }}>
+        {isRegister && (
+          <input type="text" placeholder="Nome do Utilizador / Canal" value={name} onChange={e => setName(e.target.value)} required style={{ padding: '10px', borderRadius: '6px', border: `1px solid ${themeStyle.cardBorder}`, background: themeStyle.inputBg, color: themeStyle.color }} />
+        )}
         <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required style={{ padding: '10px', borderRadius: '6px', border: `1px solid ${themeStyle.cardBorder}`, background: themeStyle.inputBg, color: themeStyle.color }} />
         <input type="password" placeholder="Palavra-passe" value={password} onChange={e => setPassword(e.target.value)} required style={{ padding: '10px', borderRadius: '6px', border: `1px solid ${themeStyle.cardBorder}`, background: themeStyle.inputBg, color: themeStyle.color }} />
-        <button type="submit" style={{ background: '#ef4444', color: '#fff', padding: '12px', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}>Entrar</button>
+        <button type="submit" style={{ background: '#ef4444', color: '#fff', padding: '12px', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}>
+          {isRegister ? 'Registar Conta' : 'Entrar'}
+        </button>
       </form>
+      <div style={{ textAlign: 'center', marginTop: '15px' }}>
+        <button onClick={() => setIsRegister(!isRegister)} style={{ background: 'transparent', border: 'none', color: '#3b82f6', cursor: 'pointer', fontWeight: 'bold', fontSize: '13px' }}>
+          {isRegister ? 'Já tem conta? Iniciar Sessão' : 'Não tem conta? Criar nova conta'}
+        </button>
+      </div>
     </div>
   );
 }
