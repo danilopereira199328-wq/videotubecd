@@ -20,6 +20,17 @@ export default function App() {
   const [history, setHistory] = useState([]);
   const [favorites, setFavorites] = useState([]);
 
+  // Estado de Subscrições
+  const [subscriptions, setSubscriptions] = useState(() => {
+    return JSON.parse(localStorage.getItem('subscriptions')) || ['Pets & Fofuras'];
+  });
+  const [showSubscribedOnly, setShowSubscribedOnly] = useState(false);
+
+  // Ordenação e Paginação
+  const [sortBy, setSortBy] = useState('recentes'); // 'recentes', 'vistas', 'likes'
+  const [visibleCount, setVisibleCount] = useState(6); // Lotes de 6 vídeos
+  const [playbackSpeed, setPlaybackSpeed] = useState(1);
+
   // Modo Escuro / Claro
   const [darkMode, setDarkMode] = useState(localStorage.getItem('theme') === 'dark');
 
@@ -39,7 +50,8 @@ export default function App() {
     name: 'Pets & Fofuras',
     description: 'Canal dedicado aos nossos bebés Tobias, Kikinho e Pequenina! Vídeos divertidos e dicas para cuidar dos seus animais.',
     avatar: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=150&auto=format&fit=crop',
-    banner: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=1200&auto=format&fit=crop'
+    banner: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=1200&auto=format&fit=crop',
+    subscribersCount: 1250
   });
 
   const categories = [
@@ -48,23 +60,23 @@ export default function App() {
     'Animais & Pets', 'Culinária', 'Viagens', 'Ciência', 'Moda & Beleza', 'Curtas'
   ];
 
-  // 15 Vídeos com IDs do YouTube únicos (sem repetições por categoria)
+  // 15 Vídeos originais com IDs limpos e corretos do YouTube
   const initialVideos = [
-    { id: '1', title: 'Pets & Fofuras: Tobias e os companheiros a brincar', description: 'Um dia divertido na vida do Tobias.', category: 'Animais & Pets', channel: 'Pets & Fofuras', viewsCount: 18400, likes: 120, dislikes: 2, bgGradient: 'linear-gradient(135deg, #f59e0b, #d97706)', youtubeId: 'PmrJFdurf3s' },
-    { id: '2', title: 'Gameplay Épico - Melhores Momentos de Esports', description: 'Jogadas incríveis do torneio.', category: 'Gaming', channel: 'ProGamer Studio', viewsCount: 142000, likes: 850, dislikes: 14, bgGradient: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', youtubeId: 'WPkNGR5UAdg' },
-    { id: '3', title: 'Concerto Acústico ao Vivo - Guitarra & Relaxamento', description: 'Sessão musical acústica.', category: 'Música', channel: 'Som & Sintonia', viewsCount: 53200, likes: 410, dislikes: 5, bgGradient: 'linear-gradient(135deg, #ec4899, #be185d)', youtubeId: 'TZj7lGAAGVw' },
-    { id: '4', title: 'Análise de Tecnologia: Inteligência Artificial e Gadgets', description: 'Análise detalhada de hardware.', category: 'Tecnologia', channel: 'Tech Zone PT', viewsCount: 89100, likes: 670, dislikes: 12, bgGradient: 'linear-gradient(135deg, #06b6d4, #0e7490)', youtubeId: 'JDm5TbfDRaM' },
-    { id: '5', title: 'Os Bastidores do Cinema e Trailers Imperdíveis', description: 'Produções cinematográficas.', category: 'Entretenimento', channel: 'CineMundo', viewsCount: 32400, likes: 290, dislikes: 3, bgGradient: 'linear-gradient(135deg, #8b5cf6, #6d28d9)', youtubeId: 'Q9szznV8gXU' },
-    { id: '6', title: 'Resumo da Jornada de Desporto e Golos da Semana', description: 'Os melhores momentos desportivos.', category: 'Desporto', channel: 'SportTV Plus', viewsCount: 45000, likes: 310, dislikes: 8, bgGradient: 'linear-gradient(135deg, #10b981, #047857)', youtubeId: 'zCGCviO3HGA' },
-    { id: '7', title: 'Aula Completa de Programação Web do Zero', description: 'Aprende HTML, CSS e JS.', category: 'Educação', channel: 'CodeMaster', viewsCount: 98000, likes: 1200, dislikes: 10, bgGradient: 'linear-gradient(135deg, #6366f1, #4338ca)', youtubeId: 'W3zD5ymVabE' },
-    { id: '8', title: 'Notícias do Dia: Atualizações Globais e Mercado', description: 'Informação em tempo real.', category: 'Notícias', channel: 'Global News', viewsCount: 22000, likes: 150, dislikes: 20, bgGradient: 'linear-gradient(135deg, #64748b, #334155)', youtubeId: '4qm63safswU' },
-    { id: '9', title: 'Podcast Exclusivo: O Futuro da Inteligência Artificial', description: 'Debate aprofundado com especialistas.', category: 'Podcasts', channel: 'TechTalks', viewsCount: 67000, likes: 540, dislikes: 4, bgGradient: 'linear-gradient(135deg, #f97316, #c2410c)', youtubeId: 'X3276MZIl4k' },
-    { id: '10', title: 'Stand-up Comedy: As melhores anedotas da semana', description: 'Risos garantidos.', category: 'Comédia', channel: 'Rir é a Alma', viewsCount: 112000, likes: 1890, dislikes: 30, bgGradient: 'linear-gradient(135deg, #eab308, #a16207)', youtubeId: '8Qnmi9Sc8T0' },
-    { id: '11', title: 'Receita Rápida na Air Fryer: Frango Crocante', description: 'Culinária saudável e fácil.', category: 'Culinária', channel: 'Kitchen Master', viewsCount: 41000, likes: 420, dislikes: 5, bgGradient: 'linear-gradient(135deg, #14b8a6, #0f766e)', youtubeId: '0Zd0o5ky4I8' },
-    { id: '12', title: 'Viagem pelas Paisagens Deslumbrantes de Portugal', description: 'De norte a sul do país.', category: 'Viagens', channel: 'Explore PT', viewsCount: 78000, likes: 950, dislikes: 11, bgGradient: 'linear-gradient(135deg, #0284c7, #0369a1)', youtubeId: 'UP6vtSAuOFA' },
-    { id: '13', title: 'Mistérios do Universo e Descobertas Científicas', description: 'Explorando o cosmos.', category: 'Ciência', channel: 'AstroLab', viewsCount: 56000, likes: 710, dislikes: 6, bgGradient: 'linear-gradient(135deg, #a855f7, #7e22ce)', youtubeId: 'gWg0tk1iNT8' },
-    { id: '14', title: 'Tendências de Moda e Estilo para o Outono', description: 'Dicas de vestuário e beleza.', category: 'Moda & Beleza', channel: 'Style Guide', viewsCount: 34000, likes: 280, dislikes: 15, bgGradient: 'linear-gradient(135deg, #f43f5e, #be123c)', youtubeId: 'CLdJFAPiGkE' },
-    { id: '15', title: 'Curtas Metragens Independentes: O Enigma', description: 'História curta emocionante.', category: 'Curtas', channel: 'IndieFlix', viewsCount: 29000, likes: 340, dislikes: 3, bgGradient: 'linear-gradient(135deg, #84cc16, #4d7c0f)', youtubeId: '6EJ3hi_R-Ig' }
+    { id: '1', title: 'Pets & Fofuras: Tobias e os companheiros a brincar', description: 'Um dia divertido na vida do Tobias.', category: 'Animais & Pets', channel: 'Pets & Fofuras', viewsCount: 18400, likes: 120, dislikes: 2, bgGradient: 'linear-gradient(135deg, #f59e0b, #d97706)', youtubeId: 'PmrJFdurf3s', date: '2026-10-25' },
+    { id: '2', title: 'Gameplay Épico - Melhores Momentos de Esports', description: 'Jogadas incríveis do torneio.', category: 'Gaming', channel: 'ProGamer Studio', viewsCount: 142000, likes: 850, dislikes: 14, bgGradient: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', youtubeId: 'WPkNGR5UAdg', date: '2026-10-24' },
+    { id: '3', title: 'Concerto Acústico ao Vivo - Guitarra & Relaxamento', description: 'Sessão musical acústica.', category: 'Música', channel: 'Som & Sintonia', viewsCount: 53200, likes: 410, dislikes: 5, bgGradient: 'linear-gradient(135deg, #ec4899, #be185d)', youtubeId: 'TZj7lGAAGVw', date: '2026-10-22' },
+    { id: '4', title: 'Análise de Tecnologia: Inteligência Artificial e Gadgets', description: 'Análise detalhada de hardware.', category: 'Tecnologia', channel: 'Tech Zone PT', viewsCount: 89100, likes: 670, dislikes: 12, bgGradient: 'linear-gradient(135deg, #06b6d4, #0e7490)', youtubeId: 'JDm5TbfDRaM', date: '2026-10-20' },
+    { id: '5', title: 'Os Bastidores do Cinema e Trailers Imperdíveis', description: 'Produções cinematográficas.', category: 'Entretenimento', channel: 'CineMundo', viewsCount: 32400, likes: 290, dislikes: 3, bgGradient: 'linear-gradient(135deg, #8b5cf6, #6d28d9)', youtubeId: 'Gt5dAxm_BEE', date: '2026-10-18' },
+    { id: '6', title: 'Resumo da Jornada de Desporto e Golos da Semana', description: 'Os melhores momentos desportivos.', category: 'Desporto', channel: 'SportTV Plus', viewsCount: 45000, likes: 310, dislikes: 8, bgGradient: 'linear-gradient(135deg, #10b981, #047857)', youtubeId: 'pfAEg1meaJs', date: '2026-10-15' },
+    { id: '7', title: 'Aula Completa de Programação Web do Zero', description: 'Aprende HTML, CSS e JS.', category: 'Educação', channel: 'CodeMaster', viewsCount: 98000, likes: 1200, dislikes: 10, bgGradient: 'linear-gradient(135deg, #6366f1, #4338ca)', youtubeId: 'KtNVXs4Z5S0', date: '2026-10-12' },
+    { id: '8', title: 'Notícias do Dia: Atualizações Globais e Mercado', description: 'Informação em tempo real.', category: 'Notícias', channel: 'Global News', viewsCount: 22000, likes: 150, dislikes: 20, bgGradient: 'linear-gradient(135deg, #64748b, #334155)', youtubeId: '0g_77It8cMw', date: '2026-10-10' },
+    { id: '9', title: 'Podcast Exclusivo: O Futuro da Inteligência Artificial', description: 'Debate aprofundado com especialistas.', category: 'Podcasts', channel: 'TechTalks', viewsCount: 67000, likes: 540, dislikes: 4, bgGradient: 'linear-gradient(135deg, #f97316, #c2410c)', youtubeId: 'X3276MZIl4k', date: '2026-10-08' },
+    { id: '10', title: 'Stand-up Comedy: As melhores anedotas da semana', description: 'Risos garantidos.', category: 'Comédia', channel: 'Rir é a Alma', viewsCount: 112000, likes: 1890, dislikes: 30, bgGradient: 'linear-gradient(135deg, #eab308, #a16207)', youtubeId: 'cXIAOk6VLoI', date: '2026-10-05' },
+    { id: '11', title: 'Receita Rápida na Air Fryer: Frango Crocante', description: 'Culinária saudável e fácil.', category: 'Culinária', channel: 'Kitchen Master', viewsCount: 41000, likes: 420, dislikes: 5, bgGradient: 'linear-gradient(135deg, #14b8a6, #0f766e)', youtubeId: 'Yr0TLsnVBh0', date: '2026-10-03' },
+    { id: '12', title: 'Viagem pelas Paisagens Deslumbrantes de Portugal', description: 'De norte a sul do país.', category: 'Viagens', channel: 'Explore PT', viewsCount: 78000, likes: 950, dislikes: 11, bgGradient: 'linear-gradient(135deg, #0284c7, #0369a1)', youtubeId: 'UP6vtSAuOFA', date: '2026-10-01' },
+    { id: '13', title: 'Mistérios do Universo e Descobertas Científicas', description: 'Explorando o cosmos.', category: 'Ciência', channel: 'AstroLab', viewsCount: 56000, likes: 710, dislikes: 6, bgGradient: 'linear-gradient(135deg, #a855f7, #7e22ce)', youtubeId: 'vJ91Ryn01RY', date: '2026-09-28' },
+    { id: '14', title: 'Tendências de Moda e Estilo para o Outono', description: 'Dicas de vestuário e beleza.', category: 'Moda & Beleza', channel: 'Style Guide', viewsCount: 34000, likes: 280, dislikes: 15, bgGradient: 'linear-gradient(135deg, #f43f5e, #be123c)', youtubeId: 'CLdJFAPiGkE', date: '2026-09-25' },
+    { id: '15', title: 'Curtas Metragens Independentes: O Enigma', description: 'História curta emocionante.', category: 'Curtas', channel: 'IndieFlix', viewsCount: 29000, likes: 340, dislikes: 3, bgGradient: 'linear-gradient(135deg, #84cc16, #4d7c0f)', youtubeId: 'aqz-KE-bpKQ', date: '2026-09-20' }
   ];
 
   const [videos, setVideos] = useState(initialVideos);
@@ -77,6 +89,19 @@ export default function App() {
     const newMode = !darkMode;
     setDarkMode(newMode);
     localStorage.setItem('theme', newMode ? 'dark' : 'light');
+  };
+
+  const toggleSubscribe = (channelName) => {
+    let updated;
+    if (subscriptions.includes(channelName)) {
+      updated = subscriptions.filter(c => c !== channelName);
+      alert(`Cancelou a subscrição do canal ${channelName}.`);
+    } else {
+      updated = [...subscriptions, channelName];
+      alert(`Subscreveu o canal ${channelName} com sucesso! 🎉`);
+    }
+    setSubscriptions(updated);
+    localStorage.setItem('subscriptions', JSON.stringify(updated));
   };
 
   const handleSelectVideo = (video) => {
@@ -130,13 +155,21 @@ export default function App() {
     alert('Vídeo eliminado com sucesso!');
   };
 
-  const filteredVideos = videos.filter(video => {
-    const matchesCategory = selectedCategory === 'Todos' || video.category === selectedCategory;
-    const matchesSearch = searchQuery === '' || 
-      video.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      video.channel.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
+  // Filtragem e Ordenação
+  const filteredVideos = videos
+    .filter(video => {
+      const matchesCategory = selectedCategory === 'Todos' || video.category === selectedCategory;
+      const matchesSearch = searchQuery === '' || 
+        video.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        video.channel.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSubscribed = !showSubscribedOnly || subscriptions.includes(video.channel);
+      return matchesCategory && matchesSearch && matchesSubscribed;
+    })
+    .sort((a, b) => {
+      if (sortBy === 'vistas') return b.viewsCount - a.viewsCount;
+      if (sortBy === 'likes') return b.likes - a.likes;
+      return new Date(b.date || '2026-10-01') - new Date(a.date || '2026-10-01');
+    });
 
   const themeStyle = {
     background: darkMode ? '#0f172a' : '#f8fafc',
@@ -158,7 +191,7 @@ export default function App() {
         <div style={{ display: 'flex', gap: '8px', width: '28%', maxWidth: '380px' }}>
           <input 
             type="text" 
-            placeholder="Pesquisar..." 
+            placeholder="Pesquisar vídeos ou canais..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{ width: '100%', padding: '8px 12px', border: `1px solid ${themeStyle.cardBorder}`, background: themeStyle.inputBg, color: themeStyle.color, borderRadius: '20px', outline: 'none', fontSize: '14px' }}
@@ -176,7 +209,6 @@ export default function App() {
           <button onClick={() => setCurrentTab('monetization')} style={navBtnStyle(currentTab === 'monetization', darkMode)}>💰 Monetização</button>
           <button onClick={() => setCurrentTab('channel')} style={navBtnStyle(currentTab === 'channel', darkMode)}>Canal</button>
 
-          {/* Botão de Alternância de Tema Escuro/Claro */}
           <button onClick={toggleDarkMode} style={{ background: darkMode ? '#f59e0b' : '#334155', color: '#fff', border: 'none', padding: '6px 10px', borderRadius: '20px', cursor: 'pointer', fontWeight: 'bold' }}>
             {darkMode ? '☀️ Claro' : '🌙 Escuro'}
           </button>
@@ -213,29 +245,53 @@ export default function App() {
       <main style={{ padding: '30px', maxWidth: '1400px', margin: '0 auto' }}>
         {currentTab === 'home' && !activeVideo && (
           <div>
-            <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '15px', marginBottom: '25px' }}>
-              {categories.map(cat => (
+            {/* Categorias & Barra de Ordenação */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px', marginBottom: '20px' }}>
+              <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '8px', maxWidth: '75%' }}>
+                {categories.map(cat => (
+                  <button 
+                    key={cat} 
+                    onClick={() => { setSelectedCategory(cat); setShowSubscribedOnly(false); }}
+                    style={{
+                      padding: '8px 16px', borderRadius: '20px', border: 'none',
+                      background: selectedCategory === cat && !showSubscribedOnly ? '#ef4444' : (darkMode ? '#334155' : '#e2e8f0'),
+                      color: selectedCategory === cat && !showSubscribedOnly ? '#fff' : themeStyle.color,
+                      fontWeight: 'bold', cursor: 'pointer', whiteSpace: 'nowrap'
+                    }}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+
+              {/* Controlo de Ordenação e Filtro de Subscrições */}
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                 <button 
-                  key={cat} 
-                  onClick={() => setSelectedCategory(cat)}
-                  style={{
-                    padding: '8px 16px', borderRadius: '20px', border: 'none',
-                    background: selectedCategory === cat ? '#ef4444' : (darkMode ? '#334155' : '#e2e8f0'),
-                    color: selectedCategory === cat ? '#fff' : themeStyle.color,
-                    fontWeight: 'bold', cursor: 'pointer', whiteSpace: 'nowrap'
-                  }}
+                  onClick={() => setShowSubscribedOnly(!showSubscribedOnly)}
+                  style={{ background: showSubscribedOnly ? '#ef4444' : '#64748b', color: '#fff', border: 'none', padding: '8px 14px', borderRadius: '20px', fontWeight: 'bold', cursor: 'pointer', fontSize: '12px' }}
                 >
-                  {cat}
+                  🔔 {showSubscribedOnly ? 'A Mostrar Subscrições' : 'Apenas Subscrições'}
                 </button>
-              ))}
+
+                <select 
+                  value={sortBy} 
+                  onChange={(e) => setSortBy(e.target.value)}
+                  style={{ padding: '8px 12px', borderRadius: '20px', border: `1px solid ${themeStyle.cardBorder}`, background: themeStyle.inputBg, color: themeStyle.color, fontWeight: 'bold', cursor: 'pointer', fontSize: '12px' }}
+                >
+                  <option value="recentes">📅 Mais Recentes</option>
+                  <option value="vistas">👁️ Mais Vistos</option>
+                  <option value="likes">👍 Mais Gostados</option>
+                </select>
+              </div>
             </div>
 
             <h3 style={{ marginBottom: '20px' }}>
-              Feed de Vídeos {selectedCategory !== 'Todos' && `- ${selectedCategory}`} ({filteredVideos.length})
+              Feed de Vídeos {showSubscribedOnly ? '(Subscrições)' : (selectedCategory !== 'Todos' && `- ${selectedCategory}`)} ({filteredVideos.length})
             </h3>
 
+            {/* Grid de Vídeos com Lotes de Paginação */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
-              {filteredVideos.map(video => (
+              {filteredVideos.slice(0, visibleCount).map(video => (
                 <div key={video.id} style={{ background: themeStyle.cardBg, borderRadius: '12px', border: `1px solid ${themeStyle.cardBorder}`, overflow: 'hidden' }}>
                   <div 
                     onClick={() => handleSelectVideo(video)} 
@@ -255,9 +311,22 @@ export default function App() {
                     )}
                   </div>
                   <div style={{ padding: '15px' }}>
-                    <span style={{ fontSize: '11px', background: '#e2e8f0', padding: '2px 6px', borderRadius: '4px', color: '#475569' }}>{video.category}</span>
-                    <h4 style={{ margin: '8px 0', fontSize: '15px' }}>{video.title}</h4>
-                    <p style={{ fontSize: '12px', color: '#64748b', margin: '0 0 10px 0' }}>{video.channel}</p>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                      <span style={{ fontSize: '11px', background: '#e2e8f0', padding: '2px 6px', borderRadius: '4px', color: '#475569' }}>{video.category}</span>
+                      <span style={{ fontSize: '11px', color: '#64748b' }}>👁️ {video.viewsCount?.toLocaleString()}</span>
+                    </div>
+
+                    <h4 style={{ margin: '6px 0', fontSize: '15px' }}>{video.title}</h4>
+                    
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '8px 0' }}>
+                      <p style={{ fontSize: '12px', color: '#64748b', margin: 0 }}>{video.channel}</p>
+                      <button 
+                        onClick={() => toggleSubscribe(video.channel)}
+                        style={{ background: subscriptions.includes(video.channel) ? '#64748b' : '#ef4444', color: '#fff', border: 'none', padding: '3px 8px', borderRadius: '12px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer' }}
+                      >
+                        {subscriptions.includes(video.channel) ? 'Subscrito' : '+ Subs' }
+                      </button>
+                    </div>
                     
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' }}>
                       <div style={{ display: 'flex', gap: '6px' }}>
@@ -277,10 +346,22 @@ export default function App() {
                 </div>
               ))}
             </div>
+
+            {/* Botão de Paginação / Carregar Mais */}
+            {visibleCount < filteredVideos.length && (
+              <div style={{ textAlign: 'center', marginTop: '30px' }}>
+                <button 
+                  onClick={() => setVisibleCount(visibleCount + 6)} 
+                  style={{ background: '#3b82f6', color: '#fff', border: 'none', padding: '12px 28px', borderRadius: '25px', fontWeight: 'bold', cursor: 'pointer', fontSize: '14px', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}
+                >
+                  📥 Carregar Mais Vídeos ({filteredVideos.length - visibleCount} restantes)
+                </button>
+              </div>
+            )}
           </div>
         )}
 
-        {/* Leitor de Vídeo com Retomar Reprodução */}
+        {/* Leitor de Vídeo Personalizado com Controlo de Velocidade */}
         {activeVideo && (
           <div style={{ background: themeStyle.cardBg, padding: '25px', borderRadius: '12px', border: `1px solid ${themeStyle.cardBorder}` }}>
             <button onClick={() => setActiveVideo(null)} style={{ background: '#e2e8f0', color: '#0f172a', border: 'none', padding: '8px 15px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', marginBottom: '20px' }}>
@@ -290,7 +371,15 @@ export default function App() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
               <div>
                 <h2 style={{ margin: 0 }}>{activeVideo.title}</h2>
-                <span style={{ fontSize: '13px', color: '#64748b' }}>Canal: {activeVideo.channel} | Categoria: {activeVideo.category}</span>
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginTop: '6px' }}>
+                  <span style={{ fontSize: '13px', color: '#64748b' }}>Canal: {activeVideo.channel}</span>
+                  <button 
+                    onClick={() => toggleSubscribe(activeVideo.channel)}
+                    style={{ background: subscriptions.includes(activeVideo.channel) ? '#64748b' : '#ef4444', color: '#fff', border: 'none', padding: '4px 12px', borderRadius: '14px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}
+                  >
+                    {subscriptions.includes(activeVideo.channel) ? '✓ Subscrito' : '+ Subs' }
+                  </button>
+                </div>
               </div>
 
               <div style={{ display: 'flex', gap: '10px' }}>
@@ -322,12 +411,27 @@ export default function App() {
               )}
             </div>
 
-            {/* Guardar Posição do Vídeo */}
-            <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '20px' }}>
-              <span style={{ fontSize: '13px', color: '#64748b' }}>⏱️ Guardar Ponto de Reprodução:</span>
-              <button onClick={() => savePlaybackPosition(activeVideo.id, 30)} style={{ padding: '4px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', cursor: 'pointer', fontSize: '12px' }}>0:30s</button>
-              <button onClick={() => savePlaybackPosition(activeVideo.id, 60)} style={{ padding: '4px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', cursor: 'pointer', fontSize: '12px' }}>1:00m</button>
-              <button onClick={() => savePlaybackPosition(activeVideo.id, 120)} style={{ padding: '4px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', cursor: 'pointer', fontSize: '12px' }}>2:00m</button>
+            {/* Controlos Personalizados & Guardar Posição */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: themeStyle.inputBg, padding: '12px 20px', borderRadius: '8px', border: `1px solid ${themeStyle.cardBorder}`, marginBottom: '20px' }}>
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <span style={{ fontSize: '13px', fontWeight: 'bold' }}>⚡ Velocidade:</span>
+                {[0.5, 1, 1.25, 1.5, 2].map(speed => (
+                  <button 
+                    key={speed} 
+                    onClick={() => setPlaybackSpeed(speed)} 
+                    style={{ padding: '4px 10px', borderRadius: '6px', border: 'none', background: playbackSpeed === speed ? '#ef4444' : '#cbd5e1', color: playbackSpeed === speed ? '#fff' : '#000', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold' }}
+                  >
+                    {speed}x
+                  </button>
+                ))}
+              </div>
+
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <span style={{ fontSize: '13px', color: '#64748b' }}>⏱️ Guardar Ponto:</span>
+                <button onClick={() => savePlaybackPosition(activeVideo.id, 30)} style={{ padding: '4px 10px', borderRadius: '6px', border: `1px solid ${themeStyle.cardBorder}`, cursor: 'pointer', fontSize: '12px', background: themeStyle.cardBg, color: themeStyle.color }}>0:30s</button>
+                <button onClick={() => savePlaybackPosition(activeVideo.id, 60)} style={{ padding: '4px 10px', borderRadius: '6px', border: `1px solid ${themeStyle.cardBorder}`, cursor: 'pointer', fontSize: '12px', background: themeStyle.cardBg, color: themeStyle.color }}>1:00m</button>
+                <button onClick={() => savePlaybackPosition(activeVideo.id, 120)} style={{ padding: '4px 10px', borderRadius: '6px', border: `1px solid ${themeStyle.cardBorder}`, cursor: 'pointer', fontSize: '12px', background: themeStyle.cardBg, color: themeStyle.color }}>2:00m</button>
+              </div>
             </div>
 
             <RealTimeCommentsSection videoId={activeVideo.id} token={token} userName={userName} socket={socket} themeStyle={themeStyle} />
@@ -594,6 +698,7 @@ function ChannelManagementTab({ channelData, setChannelData, videos, setActiveVi
             <div>
               <h2 style={{ margin: 0 }}>{channelData.name}</h2>
               <p style={{ margin: '5px 0 0 0', color: '#64748b' }}>{channelData.description}</p>
+              <span style={{ fontSize: '12px', color: '#16a34a', fontWeight: 'bold', display: 'inline-block', marginTop: '6px' }}>👥 {channelData.subscribersCount} Subscritores</span>
             </div>
           </div>
           <div style={{ padding: '25px' }}>
